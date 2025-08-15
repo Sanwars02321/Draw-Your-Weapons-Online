@@ -33,7 +33,6 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
-      
         if (string.IsNullOrEmpty(roomName))
         {
             Debug.Log("El nombre de la sala està vacio.");
@@ -66,6 +65,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         Debug.Log("Joined to room. Room name: "
             + roomName);
+        PhotonNetwork.LoadLevel("Level1");
     }
 
     public override void OnLeftRoom()
