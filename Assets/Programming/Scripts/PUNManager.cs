@@ -23,7 +23,6 @@ public class PUNManager : MonoBehaviourPunCallbacks
     public void CreateRoom()
     {
         PhotonNetwork.CreateRoom(roomName);
-        
     }
 
     public void setRoomName()
