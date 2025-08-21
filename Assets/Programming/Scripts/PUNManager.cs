@@ -22,7 +22,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom(roomName);
+        PhotonNetwork.CreateRoom("Room1");
     }
 
     public void setRoomName()
@@ -32,13 +32,14 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
-        if (string.IsNullOrEmpty(roomName))
-        {
-            Debug.Log("El nombre de la sala està vacio.");
-            return;
-        }
-        roomName = roomNameInputField.text;
-        PhotonNetwork.JoinRoom(roomName);
+        //if (string.IsNullOrEmpty(roomName))
+        //{
+        //    Debug.Log("El nombre de la sala està vacio.");
+        //    return;
+        //}
+        //roomName = roomNameInputField.text;
+
+        PhotonNetwork.JoinRoom("Room1");
     }
 
     public void LeaveRoom()

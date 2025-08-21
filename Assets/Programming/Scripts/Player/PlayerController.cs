@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
         {
             forwardAxis = actions.Gameplay.Move.ReadValue<float>();
             rotationAxis = actions.Gameplay.Rotate.ReadValue<float>();
-            Debug.Log(forwardAxis);
+            //Debug.Log(forwardAxis);
             // Movimiento
             transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.deltaTime);
 
