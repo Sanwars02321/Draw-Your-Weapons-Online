@@ -20,23 +20,25 @@ public class PlayerController : MonoBehaviour
     private PhotonView photonView;
     public PhotonView PhotonView => photonView ?? GetComponent<PhotonView>();
 
+    private int playerID;
+
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
         if (PhotonView.IsMine)
         {
+            playerID = PhotonNetwork.LocalPlayer.ActorNumber;
             inputs = GetComponent<PlayerInput>();
             actions = new PlayerActions();//Instancia las actions
             actions.Enable();
+            photonView.RPC("OnSpawned", RpcTarget.All, playerID);
         }
-
-        photonView.RPC("OnSpawned", RpcTarget.All, (byte)1);
     }
 
     [PunRPC]
-    public void OnSpawned(byte myParameter)
+    public void OnSpawned(int playerID)
     {
-        Debug.Log("Player ID" + PhotonNetwork.LocalPlayer.ActorNumber + " joined");
+        Debug.Log("Player ID" + playerID + " joined");
     }
 
 
