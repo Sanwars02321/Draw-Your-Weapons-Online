@@ -29,7 +29,16 @@ public class PlayerController : MonoBehaviour
             actions = new PlayerActions();//Instancia las actions
             actions.Enable();
         }
+
+        photonView.RPC("OnSpawned", RpcTarget.All, (byte)1);
     }
+
+    [PunRPC]
+    public void OnSpawned(byte myParameter)
+    {
+        Debug.Log("Player ID" + PhotonNetwork.LocalPlayer.ActorNumber + " joined");
+    }
+
 
     // Update is called once per frame
     void Update()

@@ -63,8 +63,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        Debug.Log("Joined to room. Room name: "
-            + roomName);
+        Debug.Log("Joined to room. Room name: "+ roomName);
         PhotonNetwork.LoadLevel("Level1");
     }
 
