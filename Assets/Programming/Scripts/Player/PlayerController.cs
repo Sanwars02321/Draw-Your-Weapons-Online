@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     private PhotonView photonView;
     public PhotonView PhotonView => photonView ?? GetComponent<PhotonView>();
 
-    [SerializeField] TextMeshPro textName;
+    [SerializeField] TextMeshProUGUI textName;
 
     private int playerID;
 
@@ -45,9 +45,14 @@ public class PlayerController : MonoBehaviour
     }
 
     [PunRPC]
-    private void RPC_SetPlayerName(string playerName)
+    public void RPC_SetPlayerName(string playerName)
     {
         textName.text = playerName;
+    }
+
+    public void SetNickname()
+    {
+        photonView.RPC("RPC_SetPlayerName", RpcTarget.AllBuffered, PlayerPrefs.GetString("playerName"));
     }
 
 
