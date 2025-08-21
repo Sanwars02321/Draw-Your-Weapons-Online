@@ -64,6 +64,9 @@ public class PUNManager : MonoBehaviourPunCallbacks
     {
         base.OnJoinedRoom();
         Debug.Log("Joined to room. Room name: "+ roomName);
+
+        PlayerPrefs.SetString("playerName", roomNameInputField.text);
+
         PhotonNetwork.LoadLevel("Level1");
     }
 

@@ -9,7 +9,9 @@ public class PlayerStarter : MonoBehaviour
     
     void Start()
     {
-        PhotonNetwork.Instantiate("Player1", spawnPoint.position, spawnPoint.rotation);
+        GameObject player = PhotonNetwork.Instantiate("Player1", spawnPoint.position, spawnPoint.rotation);
+
+        player.GetComponent<PhotonView>().RPC("RPC_SetPlayerName", RpcTarget.AllBuffered, PlayerPrefs.GetString("playerName"));
     }
 
     

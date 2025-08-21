@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -19,6 +20,8 @@ public class PlayerController : MonoBehaviour
 
     private PhotonView photonView;
     public PhotonView PhotonView => photonView ?? GetComponent<PhotonView>();
+
+    [SerializeField] TextMeshPro textName;
 
     private int playerID;
 
@@ -39,6 +42,12 @@ public class PlayerController : MonoBehaviour
     public void OnSpawned(int playerID)
     {
         Debug.Log("Player ID" + playerID + " joined");
+    }
+
+    [PunRPC]
+    private void RPC_SetPlayerName(string playerName)
+    {
+        textName.text = playerName;
     }
 
 
