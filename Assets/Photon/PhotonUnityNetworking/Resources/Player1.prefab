@@ -378,6 +378,8 @@ MonoBehaviour:
   movementSpeed: 4
   rotationSpeed: 160
   textName: {fileID: 264636191416033037}
+  bulletCooldown: 1
+  testingBulletPrefab: {fileID: 0}
 --- !u!114 &7852941040654627543
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -23,6 +23,11 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI textName;
 
+    [SerializeField] private float bulletCooldown;
+    private float bulletCooldownTimer = 0;
+
+    [SerializeField] GameObject testingBulletPrefab; // erase
+
     private int playerID;
 
     private void Awake()
@@ -35,6 +40,7 @@ public class PlayerController : MonoBehaviour
             actions = new PlayerActions();//Instancia las actions
             actions.Enable();
             photonView.RPC("OnSpawned", RpcTarget.All, playerID);
+            actions.Gameplay.Shoot.performed += Shoot;
         }
     }
 
@@ -61,6 +67,7 @@ public class PlayerController : MonoBehaviour
     {
         if (photonView.IsMine)
         {
+            CheckTimers();
             forwardAxis = actions.Gameplay.Move.ReadValue<float>();
             rotationAxis = actions.Gameplay.Rotate.ReadValue<float>();
             //Debug.Log(forwardAxis);
@@ -69,6 +76,29 @@ public class PlayerController : MonoBehaviour
 
             // Rotación
             transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.deltaTime);
+        }
+    }
+
+    private void CheckTimers()
+    {
+        //Bullet Cooldown
+        if (bulletCooldownTimer > 0)
+        {
+            bulletCooldownTimer -= Time.deltaTime;
+            if (bulletCooldownTimer <= 0)
+            {
+                bulletCooldownTimer = 0;
+            }
+        }
+    }
+
+    private void Shoot(InputAction.CallbackContext callback)
+    {
+        if (bulletCooldownTimer <= 0)
+        {
+            //var newBullet = PUNManager.Instance.InstantiateWithPhoton("bullet", transform.position, transform.rotation);
+            var newBullet = Instantiate(testingBulletPrefab, transform.position, transform.rotation); // erase
+            bulletCooldownTimer = bulletCooldown;
         }
     }
 }

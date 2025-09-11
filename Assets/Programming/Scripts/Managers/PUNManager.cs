@@ -6,7 +6,7 @@ using TMPro;
 
 public class PUNManager : MonoBehaviourPunCallbacks
 {
-    private static PUNManager instance;
+    public static PUNManager Instance;
 
     private void Awake()
     {
@@ -75,5 +75,9 @@ public class PUNManager : MonoBehaviourPunCallbacks
         base.OnLeftRoom();
         Debug.Log("Room left. Room name: "
            + roomName);
+    }
+    public GameObject InstantiateWithPhoton(string obj, Vector3 pos, Quaternion rot)
+    {
+        return PhotonNetwork.Instantiate(obj, pos,rot);
     }
 }
