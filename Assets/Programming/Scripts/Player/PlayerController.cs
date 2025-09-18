@@ -26,8 +26,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float bulletCooldown;
     private float bulletCooldownTimer = 0;
 
-    [SerializeField] GameObject testingBulletPrefab; // erase
-
     private int playerID;
 
     private void Awake()
@@ -42,6 +40,13 @@ public class PlayerController : MonoBehaviour
             photonView.RPC("OnSpawned", RpcTarget.All, playerID);
             actions.Gameplay.Shoot.performed += Shoot;
         }
+    }
+
+
+    [PunRPC]
+    public void SetInactive()
+    {
+        gameObject.SetActive(false);
     }
 
     [PunRPC]
@@ -61,8 +66,6 @@ public class PlayerController : MonoBehaviour
         photonView.RPC("RPC_SetPlayerName", RpcTarget.AllBuffered, PlayerPrefs.GetString("playerName"));
     }
 
-
-    // Update is called once per frame
     void Update()
     {
         if (photonView.IsMine)
@@ -70,7 +73,7 @@ public class PlayerController : MonoBehaviour
             CheckTimers();
             forwardAxis = actions.Gameplay.Move.ReadValue<float>();
             rotationAxis = actions.Gameplay.Rotate.ReadValue<float>();
-            //Debug.Log(forwardAxis);
+
             // Movimiento
             transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.deltaTime);
 
@@ -96,8 +99,8 @@ public class PlayerController : MonoBehaviour
     {
         if (bulletCooldownTimer <= 0)
         {
-            //var newBullet = PUNManager.Instance.InstantiateWithPhoton("bullet", transform.position, transform.rotation);
-            var newBullet = Instantiate(testingBulletPrefab, transform.position, transform.rotation); // erase
+            GameObject newBulletGO = PhotonNetwork.Instantiate("bullet", transform.position, transform.rotation);
+            newBulletGO.GetComponent<Bullet>().SetOwner(photonView.Owner);
             bulletCooldownTimer = bulletCooldown;
         }
     }

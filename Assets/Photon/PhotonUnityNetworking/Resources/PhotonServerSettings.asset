@@ -41,6 +41,8 @@ MonoBehaviour:
   - RespawnSpaceship
   - OnSpawned
   - RPC_SetPlayerName
+  - TakeDamage
+  - SetInactive
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
