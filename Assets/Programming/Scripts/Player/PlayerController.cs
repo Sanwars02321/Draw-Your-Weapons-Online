@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     private PlayerActions actions;
 
     private PhotonView photonView;
+
     public PhotonView PhotonView => photonView ?? GetComponent<PhotonView>();
 
     [SerializeField] TextMeshProUGUI textName;
@@ -104,4 +105,6 @@ public class PlayerController : MonoBehaviour
             bulletCooldownTimer = bulletCooldown;
         }
     }
+
+ 
 }

@@ -63,7 +63,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        Debug.Log("Joined to room. Room name: "+ roomName);
+        Debug.Log("Joined to room. Room name: " + roomName);
 
         PlayerPrefs.SetString("playerName", roomNameInputField.text);
 
@@ -78,6 +78,11 @@ public class PUNManager : MonoBehaviourPunCallbacks
     }
     public GameObject InstantiateWithPhoton(string obj, Vector3 pos, Quaternion rot)
     {
-        return PhotonNetwork.Instantiate(obj, pos,rot);
+        return PhotonNetwork.Instantiate(obj, pos, rot);
+    }
+
+    public Photon.Realtime.Player[] RoundStartWithPhoton()
+    {
+        return PhotonNetwork.PlayerList;
     }
 }

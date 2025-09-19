@@ -52,13 +52,11 @@ public class Bullet : MonoBehaviour
 
         if (other.CompareTag("Player"))        
         {
-            PhotonView hitView = other.GetComponent<PhotonView>();      //Gets the PhotonView comp from the hit player
+            PhotonView hitView = other.GetComponent<PhotonView>();         //Gets the PhotonView comp from the hit player
 
             if (hitView != null)
             {
-                if (hitView.Owner == owner) return; // ignora al que disparó, cambiarse para cuando rebote
-
-
+                if (hitView.Owner == owner) return;                         // ignora al que disparó, cambiarse para cuando rebote
                 hitView.RPC("TakeDamage", hitView.Owner, bulletDamage);     //Calls via RPC to the TakeDamage method from lifeController
                 PhotonNetwork.Destroy(gameObject);
             }
