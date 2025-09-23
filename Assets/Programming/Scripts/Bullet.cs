@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : MonoBehaviourPun
 {
     [SerializeField] private float speed;
     [SerializeField] private float lifeSpan;
@@ -11,15 +11,11 @@ public class Bullet : MonoBehaviour
     private float lifeSpanTimer;
     private Photon.Realtime.Player owner;
     private bool canKillOwner = false;
-
-    private PhotonView photonView;
     
     void Start()
     {
         lifeSpanTimer = lifeSpan;
-        photonView = GetComponent<PhotonView>();
     }
-
 
     void Update()
     {
@@ -29,7 +25,7 @@ public class Bullet : MonoBehaviour
             if (lifeSpanTimer <= 0)
             {
                 lifeSpanTimer = 0;
-                Destroy(gameObject);
+                PhotonNetwork.Destroy(gameObject);
             }
         }
         transform.Translate(Vector3.right * speed * Time.deltaTime);
@@ -39,12 +35,6 @@ public class Bullet : MonoBehaviour
     {
         owner = newOwner;
     }
-
-    public Photon.Realtime.Player GetOwner()
-    {
-        return owner;
-    }
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -57,7 +47,7 @@ public class Bullet : MonoBehaviour
             if (hitView != null)
             {
                 if (hitView.Owner == owner) return;                         // ignora al que disparó, cambiarse para cuando rebote
-                hitView.RPC("TakeDamage", hitView.Owner, bulletDamage);     //Calls via RPC to the TakeDamage method from lifeController
+                hitView.RPC("TakeDamage", RpcTarget.All, bulletDamage);     //Calls via RPC to the TakeDamage method from lifeController
                 PhotonNetwork.Destroy(gameObject);
             }
         }

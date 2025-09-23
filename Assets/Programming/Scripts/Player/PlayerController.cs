@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPun
 {
     [SerializeField][Min(0)] float movementSpeed;
     [SerializeField][Min(0)] float rotationSpeed;
@@ -17,9 +17,6 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInput inputs;
     private PlayerActions actions;
-
-    private PhotonView photonView;
-
     public PhotonView PhotonView => photonView ?? GetComponent<PhotonView>();
 
     [SerializeField] TextMeshProUGUI textName;
@@ -31,7 +28,6 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        photonView = GetComponent<PhotonView>();
         if (PhotonView.IsMine)
         {
             playerID = PhotonNetwork.LocalPlayer.ActorNumber;
@@ -98,13 +94,14 @@ public class PlayerController : MonoBehaviour
 
     private void Shoot(InputAction.CallbackContext callback)
     {
-        if (bulletCooldownTimer <= 0)
+        if (photonView.IsMine)
         {
-            GameObject newBulletGO = PhotonNetwork.Instantiate("bullet", transform.position, transform.rotation);
-            newBulletGO.GetComponent<Bullet>().SetOwner(photonView.Owner);
-            bulletCooldownTimer = bulletCooldown;
+            if (bulletCooldownTimer <= 0)
+            {
+                GameObject newBulletGO = PhotonNetwork.Instantiate("bullet", transform.position, transform.rotation, 0);
+                newBulletGO.GetComponent<Bullet>().SetOwner(photonView.Owner);
+                bulletCooldownTimer = bulletCooldown;
+            }
         }
     }
-
- 
 }
