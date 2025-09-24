@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviourPun
 
     private LifeController lifeController;
     private Canvas canvas;
+    public string nickName;
     public Canvas Canvas
     {
         get { return canvas; }

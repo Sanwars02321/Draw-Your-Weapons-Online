@@ -56,7 +56,6 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
         playerList.Remove(player);
         deathPlayers.Add(player);
-        player.SetInactive();
         Debug.Log(player + "Removido");
         CheckRemainingPlayers();
     }
