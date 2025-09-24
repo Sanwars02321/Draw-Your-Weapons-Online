@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviourPun
     public void RPC_SetPlayerName(string playerName)
     {
         textName.text = playerName;
+        nickName = playerName;
     }
 
     [PunRPC]

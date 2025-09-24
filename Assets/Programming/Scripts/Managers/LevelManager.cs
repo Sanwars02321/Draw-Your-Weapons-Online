@@ -121,7 +121,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
         {
             var player = playerList.First();
             //Ganó 
-            Debug.Log(player + "ganó");
+            Debug.Log(player.NickName + "ganó");
             playerPoints[player] += 1;
             PhotonView.RPC("StartNewRound", RpcTarget.AllBuffered);
         }
@@ -154,7 +154,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
         }
     }
 
-    [PunRPC]
+    
     public void GameEnded(PlayerController winner)
     {
         Debug.Log("Ganó el jugador: " + winner.NickName);
