@@ -22,7 +22,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom("Room1");
+        PhotonNetwork.CreateRoom("Room2");
     }
 
     public void setRoomName()
@@ -34,7 +34,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
     {
         //if (string.IsNullOrEmpty(roomName))
         //{
-        //    Debug.Log("El nombre de la sala està vacio.");
+        //    Debug.Log("El nombre de la sala estï¿½ vacio.");
         //    return;
         //}
         //roomName = roomNameInputField.text;

@@ -10,6 +10,8 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviourPun
 {
     [SerializeField][Min(0)] float movementSpeed;
+
+    public float initialMoveSpeed{ get; private set; }
     [SerializeField][Min(0)] float rotationSpeed;
 
     private float forwardAxis = 0;
@@ -45,6 +47,7 @@ public class PlayerController : MonoBehaviourPun
             photonView.RPC("OnSpawned", RpcTarget.All, playerID);
             actions.Gameplay.Shoot.performed += Shoot;
             lifeController = GetComponent<LifeController>();
+            initialMoveSpeed = movementSpeed;
             canvas = GetComponentInChildren<Canvas>();
         }
     }
@@ -83,7 +86,7 @@ public class PlayerController : MonoBehaviourPun
             // Movimiento
             transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.deltaTime);
 
-            // Rotación
+            // Rotaciï¿½n
             transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.deltaTime);
         }
     }
@@ -112,5 +115,10 @@ public class PlayerController : MonoBehaviourPun
                 bulletCooldownTimer = bulletCooldown;
             }
         }
+    }
+
+    public void SetMovementSpeed(float speed)
+    {
+        movementSpeed = speed;
     }
 }
