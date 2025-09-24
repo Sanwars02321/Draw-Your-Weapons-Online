@@ -7,14 +7,9 @@ using TMPro;
 public class PUNManager : MonoBehaviourPunCallbacks
 {
     public static PUNManager Instance;
-
-    private void Awake()
-    {
-
-    }
-
-    public string roomName;
+    private string roomName;
     public TMP_InputField roomNameInputField;
+    public TMP_InputField playerNameInputField;
     public void ConnectToPUN()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -22,24 +17,17 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom("Room1");
+        PhotonNetwork.CreateRoom(roomName);
     }
 
     public void setRoomName()
     {
-        roomName = roomNameInputField.textComponent.text;
+        roomName = roomNameInputField.text;
     }
 
     public void JoinRoom()
     {
-        //if (string.IsNullOrEmpty(roomName))
-        //{
-        //    Debug.Log("El nombre de la sala està vacio.");
-        //    return;
-        //}
-        //roomName = roomNameInputField.text;
-
-        PhotonNetwork.JoinRoom("Room1");
+        PhotonNetwork.JoinRoom(roomName);
     }
 
     public void LeaveRoom()
@@ -50,7 +38,6 @@ public class PUNManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.Log("OnConnectedToMaster() was called by PUN.");
-        //PhotonNetwork.JoinRandomRoom();
     }
 
     public override void OnCreatedRoom()
@@ -65,7 +52,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         Debug.Log("Joined to room. Room name: " + roomName);
 
-        PlayerPrefs.SetString("playerName", roomNameInputField.text);
+        PlayerPrefs.SetString("playerName", playerNameInputField.text);
 
         PhotonNetwork.LoadLevel("Level1");
     }

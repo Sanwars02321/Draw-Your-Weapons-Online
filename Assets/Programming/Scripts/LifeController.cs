@@ -13,7 +13,7 @@ public class LifeController : MonoBehaviourPun
     {
         sr = GetComponent<SpriteRenderer>();
 
-        LevelManager.Instance.PhotonView.RPC("RoundStarted", RpcTarget.MasterClient, playerController);
+        LevelManager.Instance.PhotonView.RPC("RoundStarted", RpcTarget.All, photonView.ViewID);
         currentHealth = MaxHealth;
     }
 
@@ -32,31 +32,46 @@ public class LifeController : MonoBehaviourPun
     [PunRPC]
     public void Die()
     {
+        if (isDead) return;
+
         if (photonView.IsMine)
         {
-            playerController.enabled = false;   //Le saca el control al jugador eliminado
+            playerController.enabled = false;
         }
 
-        sr.enabled = false;                     // Pero apaga el sprite renderer para todos 
+        sr.enabled = false;
         isDead = true;
-        photonView.RPC("RPC_ToggleCanvas", RpcTarget.AllBuffered, false);
+        photonView.RPC("RPC_ToggleCollision", RpcTarget.All, false);
+        photonView.RPC("RPC_ToggleNameTag", RpcTarget.All, false);
 
         LevelManager.Instance.PhotonView.RPC("RemovePlayer", RpcTarget.MasterClient, playerController);
     }
 
     [PunRPC]
-    public void Respawn(Vector3 pos)        //Agregar como parametro que player sería el respawneado
+    public void RPC_Revive(int revivedPlayerID)
     {
-        currentHealth = MaxHealth;
-        transform.position = pos;
+        PhotonView targetView = PhotonView.Find(revivedPlayerID);
+        if (targetView == null) return;
 
-        if (photonView.IsMine)
+        PlayerController targetPlayer = targetView.GetComponent<PlayerController>();
+        LifeController lifeControllerTargetPlayer = targetView.GetComponent<LifeController>();
+
+        if (targetPlayer != null && lifeControllerTargetPlayer.isDead)
         {
-            playerController.enabled = true;
-            photonView.RPC("RPC_ToggleCanvas", RpcTarget.AllBuffered, true);
-        }
+            lifeControllerTargetPlayer.isDead = false;
 
-        sr.enabled = true;
-        isDead = false;
+            if (targetPlayer.photonView.IsMine)             //Devuelve Inputs
+            {
+                targetPlayer.enabled = true;
+            }
+
+            if (lifeControllerTargetPlayer.sr != null)      //Devuelve Visuales
+            {
+                lifeControllerTargetPlayer.sr.enabled = true;
+            }
+
+            photonView.RPC("RPC_ToggleCollision", RpcTarget.All, true);
+            photonView.RPC("RPC_ToggleNameTag", RpcTarget.All, true);
+        }
     }
 }

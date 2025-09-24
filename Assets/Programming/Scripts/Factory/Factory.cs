@@ -15,7 +15,7 @@ public class Factory : MonoBehaviour
     {
         foreach (var prefab in prefabs)
         {
-            prefabDictonary.Add(prefab.GetComponent<IFactoryzable>().PrefabID, prefab);
+           // prefabDictonary.Add(prefab.GetComponent<IFactoryzable>().PrefabID, prefab);
         }
     }
 

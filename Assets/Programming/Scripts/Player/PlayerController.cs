@@ -26,11 +26,16 @@ public class PlayerController : MonoBehaviourPun
     private int playerID;
 
     private LifeController lifeController;
-    private Canvas canvas;
-    public Canvas Canvas
+    private GameObject nickNameCanvas;
+    private Collider2D playerCollider;
+
+    [SerializeField] private string nickName;
+
+    public string NickName => nickName;
+    public GameObject Canvas
     {
-        get { return canvas; }
-        set { canvas = value; }
+        get { return nickNameCanvas; }
+        set { nickNameCanvas = value; }
     }
 
     private void Awake()
@@ -43,9 +48,12 @@ public class PlayerController : MonoBehaviourPun
             actions.Enable();
             photonView.RPC("OnSpawned", RpcTarget.All, playerID);
             actions.Gameplay.Shoot.performed += Shoot;
-            lifeController = GetComponent<LifeController>();
-            canvas = GetComponentInChildren<Canvas>();
+
         }
+
+        playerCollider = GetComponent<Collider2D>();
+        lifeController = GetComponent<LifeController>();
+        nickNameCanvas = transform.Find("Canvas").gameObject;
     }
 
     [PunRPC]
@@ -55,15 +63,22 @@ public class PlayerController : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void RPC_ToggleCanvas(bool action)
+    public void RPC_ToggleCollision(bool action)
     {
-        canvas.enabled = action;
+        playerCollider.enabled = action;
     }
 
     [PunRPC]
     public void RPC_SetPlayerName(string playerName)
     {
         textName.text = playerName;
+    }
+
+    [PunRPC]
+    public void RPC_ToggleNameTag(bool action)
+    {
+        if (nickNameCanvas != null)
+            nickNameCanvas.SetActive(action);
     }
 
     public void SetNickname()

@@ -48,6 +48,18 @@ MonoBehaviour:
   - Die
   - Respawn
   - RPC_ToggleCanvas
+  - ChangeCurrentRound
+  - GameEnded
+  - ResetPositions
+  - StartCounting
+  - RegisterPlayerForAll
+  - UnregisterPlayerForAll
+  - RPC_Revive
+  - RPC_ToggleCollision
+  - RPC_ToggleNameTag
+  - ResetSpawnPoints
+  - StartNewRound
+  - CheckWinner
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
