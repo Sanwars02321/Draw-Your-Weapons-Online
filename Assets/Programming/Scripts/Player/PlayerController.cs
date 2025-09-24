@@ -23,8 +23,15 @@ public class PlayerController : MonoBehaviourPun
 
     [SerializeField] private float bulletCooldown;
     private float bulletCooldownTimer = 0;
-
     private int playerID;
+
+    private LifeController lifeController;
+    private Canvas canvas;
+    public Canvas Canvas
+    {
+        get { return canvas; }
+        set { canvas = value; }
+    }
 
     private void Awake()
     {
@@ -32,24 +39,25 @@ public class PlayerController : MonoBehaviourPun
         {
             playerID = PhotonNetwork.LocalPlayer.ActorNumber;
             inputs = GetComponent<PlayerInput>();
-            actions = new PlayerActions();//Instancia las actions
+            actions = new PlayerActions(); //Instancia las actions
             actions.Enable();
             photonView.RPC("OnSpawned", RpcTarget.All, playerID);
             actions.Gameplay.Shoot.performed += Shoot;
+            lifeController = GetComponent<LifeController>();
+            canvas = GetComponentInChildren<Canvas>();
         }
-    }
-
-
-    [PunRPC]
-    public void SetInactive()
-    {
-        gameObject.SetActive(false);
     }
 
     [PunRPC]
     public void OnSpawned(int playerID)
     {
         Debug.Log("Player ID" + playerID + " joined");
+    }
+
+    [PunRPC]
+    public void RPC_ToggleCanvas(bool action)
+    {
+        canvas.enabled = action;
     }
 
     [PunRPC]
@@ -94,7 +102,7 @@ public class PlayerController : MonoBehaviourPun
 
     private void Shoot(InputAction.CallbackContext callback)
     {
-        if (photonView.IsMine)
+        if (photonView.IsMine && !lifeController.isDead)
         {
             if (bulletCooldownTimer <= 0)
             {

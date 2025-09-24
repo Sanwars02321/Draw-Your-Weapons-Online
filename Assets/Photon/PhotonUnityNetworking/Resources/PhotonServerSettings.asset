@@ -45,6 +45,9 @@ MonoBehaviour:
   - SetInactive
   - RemovePlayer
   - RoundStarted
+  - Die
+  - Respawn
+  - RPC_ToggleCanvas
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
