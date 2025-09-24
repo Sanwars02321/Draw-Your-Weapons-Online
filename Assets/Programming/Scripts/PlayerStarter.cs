@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerStarter : MonoBehaviour
 {
     [SerializeField] private Transform spawnPoint;
-    
+
     void Start()
     {
         GameObject player = PhotonNetwork.Instantiate("Player1", spawnPoint.position, spawnPoint.rotation);
