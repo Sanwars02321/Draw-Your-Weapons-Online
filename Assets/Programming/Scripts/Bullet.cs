@@ -19,16 +19,19 @@ public class Bullet : MonoBehaviourPun
 
     void Update()
     {
-        if (lifeSpanTimer > 0)
+        if (photonView.IsMine)
         {
-            lifeSpanTimer -= Time.deltaTime;
-            if (lifeSpanTimer <= 0)
+            if (lifeSpanTimer > 0)
             {
-                lifeSpanTimer = 0;
-                PhotonNetwork.Destroy(gameObject);
+                lifeSpanTimer -= Time.deltaTime;
+                if (lifeSpanTimer <= 0)
+                {
+                    lifeSpanTimer = 0;
+                    PhotonNetwork.Destroy(gameObject);
+                }
             }
+            transform.Translate(Vector3.right * speed * Time.deltaTime);
         }
-        transform.Translate(Vector3.right * speed * Time.deltaTime);
     }
 
     public void SetOwner(Photon.Realtime.Player newOwner)
