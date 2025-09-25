@@ -17,7 +17,7 @@ public class SpeedPowerUp : MonoBehaviourPun
 
     void Update()
     {
-        if (!photonView.IsMine) return;
+        if (!PhotonNetwork.IsMasterClient) return;
 
         int hitCount = Physics2D.OverlapCircleNonAlloc(
             transform.position,
