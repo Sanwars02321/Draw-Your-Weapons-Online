@@ -16,8 +16,9 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
     private Dictionary<PlayerController, int> playerPoints = new Dictionary<PlayerController, int>();
     private GameObject SpawnPositionsGO;
-    [SerializeField] private int currentRound;
-    [SerializeField] private int MaxRounds;
+    private int currentRound;
+    private int MaxRounds;
+    [SerializeField] private int maxPoints;
     private PhotonView photonView;
 
     [SerializeField] private GameObject WinScreen, DefeatScreen;
@@ -181,13 +182,19 @@ public class LevelManager : AbstractSingleton<LevelManager>
         PlayerController temp = playerList[0];
         foreach (var player in playerPoints.Keys)
         {
-            if (playerPoints[player] > playerPoints[temp])
+            /*if (playerPoints[player] > playerPoints[temp])
             {
                 temp = player;
+            }*/
+            if (playerPoints[player] >= maxPoints)
+            {
+                temp = player;
+                return temp;
             }
         }
-        Debug.Log(temp.NickName);
-        return temp;
+        return null;
+        //Debug.Log(temp.NickName);
+        //return temp;
     }
 
     [PunRPC]
@@ -195,11 +202,15 @@ public class LevelManager : AbstractSingleton<LevelManager>
     {
         currentRound++;
 
-        if (currentRound > MaxRounds)
+        //if (currentRound > MaxRounds)
+        //{
+            //currentRound = MaxRounds;
+        var winner = CheckWinner();
+        if (winner != null)
         {
-            currentRound = MaxRounds;
-            GameEnded(CheckWinner());
+            GameEnded(winner);
         }
+        //}
     }
 
     public void GameEnded(PlayerController winner)
@@ -207,8 +218,6 @@ public class LevelManager : AbstractSingleton<LevelManager>
         gameEnded = true;
         if (PhotonNetwork.IsMasterClient)
         {
-           
-          
             photonView.RPC("ShowGameResult", RpcTarget.All, winner.photonView.ViewID);
         }
     }
