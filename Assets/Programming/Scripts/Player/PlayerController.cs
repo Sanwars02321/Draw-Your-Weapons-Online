@@ -152,6 +152,13 @@ public class PlayerController : MonoBehaviourPun
             }
         }
     }
+    private void OnDestroy()
+    {
+        if (PhotonView.IsMine)
+        {
+            actions.Gameplay.Shoot.performed -= Shoot;
+        }
+    }
 
     [PunRPC]
     public void ApplyEffect(float lifeSpan)
