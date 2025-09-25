@@ -65,9 +65,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 photonView.RPC("ChangeCurrentRound", RpcTarget.MasterClient);
                 photonView.RPC("ResetPositions", RpcTarget.MasterClient);
                 photonView.RPC("SpawnPowerUps", RpcTarget.MasterClient);
-
             }
-
         }
 
     }
@@ -271,6 +269,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
             DefeatScreen.SetActive(true);
         }
     }
+
     public void EndMatch()
     {
         PUNManager.Instance.LeaveRoom();

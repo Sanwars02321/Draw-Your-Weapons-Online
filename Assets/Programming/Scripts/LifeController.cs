@@ -44,7 +44,10 @@ public class LifeController : MonoBehaviourPun
         photonView.RPC("RPC_ToggleCollision", RpcTarget.All, false);
         photonView.RPC("RPC_ToggleNameTag", RpcTarget.All, false);
 
-        LevelManager.Instance.PhotonView.RPC("RemovePlayer", RpcTarget.MasterClient, playerController.photonView.ViewID);
+        if (photonView.IsMine)
+        {
+            LevelManager.Instance.PhotonView.RPC("RemovePlayer", RpcTarget.MasterClient, playerController.photonView.ViewID);
+        }
     }
 
     [PunRPC]
