@@ -61,6 +61,7 @@ MonoBehaviour:
   - StartNewRound
   - CheckWinner
   - ApplyEffect
+  - CheckState
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

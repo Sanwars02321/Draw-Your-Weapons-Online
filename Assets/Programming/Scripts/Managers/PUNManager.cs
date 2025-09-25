@@ -13,11 +13,14 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public void Awake()
     {
-        Instance = this;
-
-        if (Instance == null || Instance != this)
+        if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            // De lo contrario, esta es la instancia y la conservamos.
+            Instance = this;
         }
 
         DontDestroyOnLoad(gameObject);

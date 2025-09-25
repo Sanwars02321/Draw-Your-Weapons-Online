@@ -143,4 +143,17 @@ public class PlayerController : MonoBehaviourPun
             }
         }
     }
+
+    [PunRPC]
+    public void ApplyEffect(float lifeSpan)
+    {
+        movementSpeed *= 2f;
+        StartCoroutine(RemoveEffectAfterTime(lifeSpan));
+    }
+
+    private IEnumerator RemoveEffectAfterTime(float time)
+    {
+        yield return new WaitForSeconds(time);
+        movementSpeed /= 2f;
+    }
 }
