@@ -11,6 +11,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
     public TMP_InputField roomNameInputField;
     public TMP_InputField playerNameInputField;
 
+
     public void Awake()
     {
         if (Instance != null && Instance != this)
@@ -56,6 +57,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.Log("OnConnectedToMaster() was called by PUN.");
+        ButtonManager.instance.LoadResult(1);
     }
 
     public override void OnCreatedRoom()
