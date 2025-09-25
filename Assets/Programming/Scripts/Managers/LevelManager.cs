@@ -1,8 +1,6 @@
-using Photon.Pun;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
+using Photon.Pun;
 using UnityEngine;
 
 public class LevelManager : AbstractSingleton<LevelManager>
@@ -16,6 +14,8 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [SerializeField] private int currentRound;
     [SerializeField] private int MaxRounds;
     private PhotonView photonView;
+
+    [SerializeField] private GameObject WinScreen, DefeatScreen;
     public PhotonView PhotonView => photonView;
 
     public override void Awake()
@@ -37,7 +37,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
         foreach (var player in deathPlayers)
         {
             playerList.Add(player);
-           
+
             player.photonView.RPC("RPC_Revive", RpcTarget.AllBuffered, player.photonView.ViewID);
         }
 
@@ -81,12 +81,13 @@ public class LevelManager : AbstractSingleton<LevelManager>
             }
         }
     }
+
     [PunRPC]
     public void RoundStarted(int viewId)
     {
         PhotonView.Find(viewId);
         photonView.RPC("RegisterPlayerForAll", RpcTarget.All, viewId);
-      
+
         foreach (var player in playerList)
         {
             if (!playerPoints.ContainsKey(player))
@@ -101,14 +102,14 @@ public class LevelManager : AbstractSingleton<LevelManager>
             photonView.RPC("ResetSpawnPoints", RpcTarget.AllBuffered);
             photonView.RPC("ResetPositions", RpcTarget.AllBuffered);
         }
-       
+
 
     }
 
     [PunRPC]
     public void RemovePlayer(PlayerController player)
     {
-        
+
         playerList.Remove(player);
         deathPlayers.Add(player);
         Debug.Log(player + "Removido");
@@ -139,6 +140,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 temp = player;
             }
         }
+        Debug.Log(temp.NickName);
         return temp;
     }
 
@@ -154,16 +156,21 @@ public class LevelManager : AbstractSingleton<LevelManager>
         }
     }
 
-    
+
     public void GameEnded(PlayerController winner)
     {
         Debug.Log("Ganó el jugador: " + winner.NickName);
+        winner.HasWon = true;
+        foreach (var player in playerList)
+        {
+            player.CheckState();
+        }
     }
 
     [PunRPC]
     public void ResetPositions()
     {
-       
+
         foreach (var player in playerList)
         {
             int randomNumber = Random.Range(0, spawnPositions.Count);
@@ -192,4 +199,29 @@ public class LevelManager : AbstractSingleton<LevelManager>
     {
 
     }
+
+    public void AfterMatch(PlayerController player)
+    {
+
+
+        if (player.photonView.ViewID != CheckWinner().photonView.ViewID)
+        {
+            WinScreen.SetActive(false);
+            DefeatScreen.SetActive(true);
+            return;
+        }
+
+        else
+        {
+            DefeatScreen.SetActive(false);
+            WinScreen.SetActive(true);
+        }
+
+
+    }
+    public void EndMatch()
+    {
+        PUNManager.Instance.LeaveRoom();
+    }
 }
+

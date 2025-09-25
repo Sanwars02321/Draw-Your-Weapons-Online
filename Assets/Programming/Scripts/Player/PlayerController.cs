@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField][Min(0)] float movementSpeed;
     [SerializeField][Min(0)] float rotationSpeed;
 
+    private bool hasWon;
+
+    public bool HasWon {  get { return hasWon; }  set { hasWon = value; } }
     private float forwardAxis = 0;
     private float rotationAxis = 0;
 
@@ -31,6 +34,9 @@ public class PlayerController : MonoBehaviourPun
 
     [SerializeField] private string nickName;
 
+    private bool isDead;
+
+    public bool IsDead { get { return isDead; } set { isDead = value; } }
     public string NickName => nickName;
     public GameObject Canvas
     {
@@ -116,6 +122,15 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    [PunRPC]
+    public void CheckState()
+    {
+        if (photonView.IsMine)
+        {
+            LevelManager.Instance.AfterMatch(this);
+        }
+
+    }
     private void Shoot(InputAction.CallbackContext callback)
     {
         if (photonView.IsMine && !lifeController.isDead)

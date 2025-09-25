@@ -10,6 +10,20 @@ public class PUNManager : MonoBehaviourPunCallbacks
     private string roomName;
     public TMP_InputField roomNameInputField;
     public TMP_InputField playerNameInputField;
+
+    public void Awake()
+    {
+        Instance = this;
+
+        if (Instance == null || Instance != this)
+        {
+            Destroy(gameObject);
+        }
+
+        DontDestroyOnLoad(gameObject);
+
+        
+    }
     public void ConnectToPUN()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -33,6 +47,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LoadLevel("Menu");
     }
 
     public override void OnConnectedToMaster()
