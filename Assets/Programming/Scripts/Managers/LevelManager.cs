@@ -48,9 +48,9 @@ public class LevelManager : AbstractSingleton<LevelManager>
         }
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC("ResetSpawnPoints", RpcTarget.AllBuffered);
-            photonView.RPC("ChangeCurrentRound", RpcTarget.AllBuffered);
-            photonView.RPC("ResetPositions", RpcTarget.AllBuffered);
+            photonView.RPC("ResetSpawnPoints", RpcTarget.MasterClient);
+            photonView.RPC("ChangeCurrentRound", RpcTarget.MasterClient);
+            photonView.RPC("ResetPositions", RpcTarget.MasterClient);
         }
 
     }
@@ -86,8 +86,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [PunRPC]
     public void RoundStarted(int viewId)
     {
-        PhotonView.Find(viewId);
-        photonView.RPC("RegisterPlayerForAll", RpcTarget.All, viewId);
+        
 
         foreach (var player in playerList)
         {
@@ -99,9 +98,11 @@ public class LevelManager : AbstractSingleton<LevelManager>
         //Debug.Log(playerController.gameObject.name + " Joined");
         if (PhotonNetwork.IsMasterClient)
         {
+            PhotonView.Find(viewId);
+            photonView.RPC("RegisterPlayerForAll", RpcTarget.All, viewId);
             Debug.Log("PLAYERS: " + playerList.Count);
-            photonView.RPC("ResetSpawnPoints", RpcTarget.AllBuffered);
-            photonView.RPC("ResetPositions", RpcTarget.AllBuffered);
+            photonView.RPC("ResetSpawnPoints", RpcTarget.MasterClient);
+            photonView.RPC("ResetPositions", RpcTarget.MasterClient);
         }
 
 
@@ -172,14 +173,18 @@ public class LevelManager : AbstractSingleton<LevelManager>
     public void ResetPositions()
     {
 
-        foreach (var player in playerList)
-        {
-            int randomNumber = Random.Range(0, spawnPositions.Count);
-            GameObject targetSpawn = spawnPositions[randomNumber];
-            player.gameObject.transform.position = targetSpawn.transform.position;
-            player.gameObject.transform.rotation = targetSpawn.transform.rotation;
-            spawnPositions.Remove(targetSpawn);
-            Debug.Log(spawnPositions.Count);
+        if (PhotonNetwork.IsMasterClient) {
+
+            List<GameObject> temp = spawnPositions.ToList();
+
+            foreach (var player in playerList)
+            {
+                int randomNumber = Random.Range(0, temp.Count);
+                GameObject targetSpawn = temp[randomNumber];
+                player.photonView.RPC("ResetPos", RpcTarget.AllBuffered, targetSpawn.transform.position, targetSpawn.transform.rotation);
+                temp.Remove(targetSpawn);
+                Debug.Log(spawnPositions.Count);
+            }
         }
     }
 

@@ -62,6 +62,17 @@ public class PlayerController : MonoBehaviourPun
         nickNameCanvas = transform.Find("Canvas").gameObject;
     }
 
+
+    [PunRPC]
+    public void ResetPos(Vector3 pos, Quaternion rotation)
+    {
+        if (photonView.IsMine)
+        {
+            gameObject.transform.position = pos;
+            gameObject.transform.rotation = rotation;
+        }
+    }
+
     [PunRPC]
     public void OnSpawned(int playerID)
     {
