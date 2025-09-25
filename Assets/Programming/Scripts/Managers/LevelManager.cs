@@ -281,7 +281,15 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
     public void EndMatch()
     {
-        PUNManager.Instance.LeaveRoom();
+        if (PhotonNetwork.PlayerList.Count() > 1)
+        {
+            PUNManager.Instance.LeaveRoom();
+        }
+        else
+        {
+
+        }
+        
     }
 }
 

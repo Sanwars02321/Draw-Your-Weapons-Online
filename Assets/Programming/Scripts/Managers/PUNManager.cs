@@ -36,7 +36,13 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom(roomName);
+        var roomOptions = new RoomOptions
+        {
+            MaxPlayers = 4,
+            // La sala se destruye apenas queda vacía
+            EmptyRoomTtl = 0,
+        };
+        var room = PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
 
     public void setRoomName()
@@ -55,11 +61,17 @@ public class PUNManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel("Menu");
     }
 
+    public void CloseRoom()
+    {
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+        LeaveRoom();
+    }
+
     public override void OnConnectedToMaster()
     {
         Debug.Log("OnConnectedToMaster() was called by PUN.");
         ButtonManager.instance.LoadResult(1);
-        
     }
 
     //public override void OnDisconnected(DisconnectCause cause)
