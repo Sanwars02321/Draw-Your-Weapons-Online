@@ -15,14 +15,15 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [SerializeField] private int MaxRounds;
     private PhotonView photonView;
 
+    
     [SerializeField] private GameObject WinScreen, DefeatScreen;
     public PhotonView PhotonView => photonView;
 
     public override void Awake()
     {
 
-
-        base.Awake();
+        Instance = this;
+        //base.Awake();
     }
 
     private void Start()
