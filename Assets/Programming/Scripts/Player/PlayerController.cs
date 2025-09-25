@@ -95,6 +95,8 @@ public class PlayerController : MonoBehaviourPun
         {
             gameObject.transform.position = pos;
             gameObject.transform.rotation = rotation;
+            isOnPowerUp = false;
+            movementSpeed = initialSpeed;
         }
     }
 
@@ -121,7 +123,7 @@ public class PlayerController : MonoBehaviourPun
             // Movimiento
             transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.deltaTime);
 
-            // Rotación
+            // Rotaciï¿½n
             transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.deltaTime);
         }
     }
