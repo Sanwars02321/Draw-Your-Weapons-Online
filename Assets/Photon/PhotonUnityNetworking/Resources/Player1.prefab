@@ -378,6 +378,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 4
+  speedBoostSpeed: 7
+  initialSpeed: 3
   rotationSpeed: 160
   textName: {fileID: 264636191416033037}
   bulletCooldown: 1

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SpeedPowerUp : MonoBehaviourPun
 {
-    [SerializeField] private float lifeSpan = 5f;
+    [SerializeField] private float lifeSpan = 3f;
     [SerializeField] private float detectionRadius = 1f;
 
 
@@ -17,7 +17,7 @@ public class SpeedPowerUp : MonoBehaviourPun
 
     void Update()
     {
-        if (!photonView.IsMine || hasBeenCollected) return;
+        if (!photonView.IsMine) return;
 
         int hitCount = Physics2D.OverlapCircleNonAlloc(
             transform.position,
@@ -29,10 +29,11 @@ public class SpeedPowerUp : MonoBehaviourPun
         {
             if (resultsBuffer[i].CompareTag("Player"))
             {
+                Debug.Log("Power Up Collected");
                 PhotonView hitView = resultsBuffer[i].GetComponent<PhotonView>();
-                if (hitView != null)
+                PlayerController localPlayer = hitView.GetComponent<PlayerController>();
+                if (hitView != null && !localPlayer.isOnPowerUp)
                 {
-                    hasBeenCollected = true; 
                     hitView.RPC("ApplyEffect", RpcTarget.All, lifeSpan);
                     PhotonNetwork.Destroy(gameObject);
                     return; 

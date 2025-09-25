@@ -10,9 +10,15 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviourPun
 {
     [SerializeField][Min(0)] float movementSpeed;
+    [SerializeField][Min(0)] float speedBoostSpeed = 3f;
+    [SerializeField][Min(0)] float initialSpeed;
+
+
     [SerializeField][Min(0)] float rotationSpeed;
 
     private bool hasWon;
+
+    public bool isOnPowerUp { get; private set; }
 
     public bool HasWon {  get { return hasWon; }  set { hasWon = value; } }
     private float forwardAxis = 0;
@@ -54,23 +60,12 @@ public class PlayerController : MonoBehaviourPun
             actions.Enable();
             photonView.RPC("OnSpawned", RpcTarget.All, playerID);
             actions.Gameplay.Shoot.performed += Shoot;
-
+            initialSpeed = movementSpeed;
         }
 
         playerCollider = GetComponent<Collider2D>();
         lifeController = GetComponent<LifeController>();
         nickNameCanvas = transform.Find("Canvas").gameObject;
-    }
-
-
-    [PunRPC]
-    public void ResetPos(Vector3 pos, Quaternion rotation)
-    {
-        if (photonView.IsMine)
-        {
-            gameObject.transform.position = pos;
-            gameObject.transform.rotation = rotation;
-        }
     }
 
     [PunRPC]
@@ -90,6 +85,17 @@ public class PlayerController : MonoBehaviourPun
     {
         textName.text = playerName;
         nickName = playerName;
+    }
+
+
+    [PunRPC]
+    public void ResetPos(Vector3 pos, Quaternion rotation)
+    {
+        if (photonView.IsMine)
+        {
+            gameObject.transform.position = pos;
+            gameObject.transform.rotation = rotation;
+        }
     }
 
     [PunRPC]
@@ -132,16 +138,6 @@ public class PlayerController : MonoBehaviourPun
             }
         }
     }
-
-    [PunRPC]
-    public void CheckState()
-    {
-        if (photonView.IsMine)
-        {
-            LevelManager.Instance.AfterMatch(this);
-        }
-
-    }
     private void Shoot(InputAction.CallbackContext callback)
     {
         if (photonView.IsMine && !lifeController.isDead)
@@ -158,13 +154,15 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     public void ApplyEffect(float lifeSpan)
     {
-        movementSpeed *= 2f;
+        isOnPowerUp = true;
+        movementSpeed = speedBoostSpeed;
         StartCoroutine(RemoveEffectAfterTime(lifeSpan));
     }
 
     private IEnumerator RemoveEffectAfterTime(float time)
     {
         yield return new WaitForSeconds(time);
-        movementSpeed /= 2f;
+        movementSpeed = initialSpeed;
+        isOnPowerUp = false;
     }
 }

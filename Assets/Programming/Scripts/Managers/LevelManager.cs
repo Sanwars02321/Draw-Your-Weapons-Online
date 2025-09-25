@@ -9,19 +9,20 @@ public class LevelManager : AbstractSingleton<LevelManager>
     private List<PlayerController> playerList = new List<PlayerController>();
     private List<PlayerController> deathPlayers = new List<PlayerController>();
     [SerializeField] private List<GameObject> spawnPositions = new List<GameObject>();
+    private List<SpeedPowerUp> speedPowerUps = new List<SpeedPowerUp>();
+    [SerializeField] private Transform[] powerUpPositions = new Transform[2];
+
     private Dictionary<PlayerController, int> playerPoints = new Dictionary<PlayerController, int>();
     private GameObject SpawnPositionsGO;
     [SerializeField] private int currentRound;
     [SerializeField] private int MaxRounds;
     private PhotonView photonView;
 
-    
     [SerializeField] private GameObject WinScreen, DefeatScreen;
     public PhotonView PhotonView => photonView;
 
     public override void Awake()
     {
-
         Instance = this;
         //base.Awake();
     }
@@ -46,11 +47,16 @@ public class LevelManager : AbstractSingleton<LevelManager>
         {
             deathPlayers.Remove(player);
         }
+        speedPowerUps.Clear();
+
+
         if (PhotonNetwork.IsMasterClient)
         {
             photonView.RPC("ResetSpawnPoints", RpcTarget.MasterClient);
             photonView.RPC("ChangeCurrentRound", RpcTarget.MasterClient);
             photonView.RPC("ResetPositions", RpcTarget.MasterClient);
+            photonView.RPC("SpawnPowerUps", RpcTarget.MasterClient);
+
         }
 
     }
@@ -68,7 +74,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
             }
         }
     }
-
+    
     [PunRPC]
     public void UnregisterPlayerForAll(int viewID)
     {
@@ -86,7 +92,8 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [PunRPC]
     public void RoundStarted(int viewId)
     {
-        
+        PhotonView.Find(viewId);
+        photonView.RPC("RegisterPlayerForAll", RpcTarget.All, viewId);
 
         foreach (var player in playerList)
         {
@@ -95,29 +102,47 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 playerPoints.Add(player, 0);
             }
         }
-        //Debug.Log(playerController.gameObject.name + " Joined");
+
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonView.Find(viewId);
             photonView.RPC("RegisterPlayerForAll", RpcTarget.All, viewId);
+            photonView.RPC("SpawnPowerUps", RpcTarget.MasterClient);
+
             Debug.Log("PLAYERS: " + playerList.Count);
             photonView.RPC("ResetSpawnPoints", RpcTarget.MasterClient);
             photonView.RPC("ResetPositions", RpcTarget.MasterClient);
         }
-
-
     }
 
+
     [PunRPC]
-    public void RemovePlayer(PlayerController player)
+    public void SpawnPowerUps()
     {
+        if (speedPowerUps.Count > 0) return;
+        foreach (var powerUp in powerUpPositions)
+        {
+   
+            PhotonNetwork.Instantiate("SpeedBoost", powerUp.position, powerUp.rotation, 0);
+            speedPowerUps.Add(powerUp.GetComponent<SpeedPowerUp>());
+        }
+    }
+
+
+
+    [PunRPC]
+    public void RemovePlayer(int playerViewID) // Cambiar parámetro a int
+    {
+        // Buscar el PlayerController por ViewID
+        PhotonView targetView = PhotonView.Find(playerViewID);
+
+        PlayerController player = targetView.GetComponent<PlayerController>();
 
         playerList.Remove(player);
         deathPlayers.Add(player);
-        Debug.Log(player + "Removido");
+        Debug.Log($"{player.NickName} removido");
         CheckRemainingPlayers();
     }
-
     public void CheckRemainingPlayers()
     {
         if (playerList.Count == 1)
@@ -158,32 +183,27 @@ public class LevelManager : AbstractSingleton<LevelManager>
         }
     }
 
-
     public void GameEnded(PlayerController winner)
     {
-        Debug.Log("Ganó el jugador: " + winner.NickName);
-        winner.HasWon = true;
-        foreach (var player in playerList)
+        if (PhotonNetwork.IsMasterClient)
         {
-            player.CheckState();
+            photonView.RPC("ShowGameResult", RpcTarget.All, winner.photonView.ViewID);
         }
     }
 
     [PunRPC]
     public void ResetPositions()
     {
-
-        if (PhotonNetwork.IsMasterClient) {
-
+        if (PhotonNetwork.IsMasterClient)
+        {
             List<GameObject> temp = spawnPositions.ToList();
-
             foreach (var player in playerList)
             {
                 int randomNumber = Random.Range(0, temp.Count);
                 GameObject targetSpawn = temp[randomNumber];
-                player.photonView.RPC("ResetPos", RpcTarget.AllBuffered, targetSpawn.transform.position, targetSpawn.transform.rotation);
+                player.gameObject.transform.position = targetSpawn.transform.position;
+                player.gameObject.transform.rotation = targetSpawn.transform.rotation;
                 temp.Remove(targetSpawn);
-                Debug.Log(spawnPositions.Count);
             }
         }
     }
@@ -201,29 +221,23 @@ public class LevelManager : AbstractSingleton<LevelManager>
     }
 
     [PunRPC]
-    public void StartCounting()
+    public void ShowGameResult(int winnerViewID)
     {
+        //Check for local player on the list
+        PlayerController localPlayer = playerList.Find(p => p.photonView.IsMine);
+        if (localPlayer == null) return;
 
-    }
+        WinScreen.SetActive(false);
+        DefeatScreen.SetActive(false);
 
-    public void AfterMatch(PlayerController player)
-    {
-
-
-        if (player.photonView.ViewID != CheckWinner().photonView.ViewID)
+        if (localPlayer.photonView.ViewID == winnerViewID) //Compare winner ID with local player ID
         {
-            WinScreen.SetActive(false);
-            DefeatScreen.SetActive(true);
-            return;
-        }
-
-        else
-        {
-            DefeatScreen.SetActive(false);
             WinScreen.SetActive(true);
         }
-
-
+        else
+        {
+            DefeatScreen.SetActive(true);
+        }
     }
     public void EndMatch()
     {

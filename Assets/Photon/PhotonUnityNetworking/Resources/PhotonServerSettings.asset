@@ -62,6 +62,8 @@ MonoBehaviour:
   - CheckWinner
   - ApplyEffect
   - CheckState
+  - ShowGameResult
+  - SpawnPowerUps
   - ResetPos
   DisableAutoOpenWizard: 1
   ShowSettings: 1
