@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
+using Photon.Realtime;
 
 public class PUNManager : MonoBehaviourPunCallbacks
 {
@@ -58,6 +59,18 @@ public class PUNManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("OnConnectedToMaster() was called by PUN.");
         ButtonManager.instance.LoadResult(1);
+        
+    }
+
+    //public override void OnDisconnected(DisconnectCause cause)
+    //{
+    //    base.OnDisconnected(cause);
+    //}
+
+    public override void OnCustomAuthenticationFailed(string error)
+    {
+        Debug.Log(error);
+        ButtonManager.instance.LoadResult(2);
     }
 
     public override void OnCreatedRoom()

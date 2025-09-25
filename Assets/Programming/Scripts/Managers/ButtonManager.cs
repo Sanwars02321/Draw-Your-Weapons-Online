@@ -19,7 +19,7 @@ public class ButtonManager : MonoBehaviour
         PUNManager.Instance.ConnectToPUN();
         animator.SetBool("IsLoading", true);
         //animator.SetBool("Loaded", false);
-        //animator.SetBool("LoadFail", false);
+        animator.SetBool("LoadFail", false);
 
     }
 
