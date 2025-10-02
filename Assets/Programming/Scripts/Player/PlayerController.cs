@@ -120,12 +120,16 @@ public class PlayerController : MonoBehaviourPun
             forwardAxis = actions.Gameplay.Move.ReadValue<float>();
             rotationAxis = actions.Gameplay.Rotate.ReadValue<float>();
 
-            // Movimiento
-            transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.deltaTime);
-
-            // Rotaci�n
-            transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.deltaTime);
+            
         }
+    }
+    private void FixedUpdate()
+    {
+        // Movimiento
+        transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.fixedDeltaTime);
+
+        // Rotaci�n
+        transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.fixedDeltaTime);
     }
 
     private void CheckTimers()
