@@ -7,10 +7,10 @@ public class PlayerStarter : MonoBehaviour
 {
     [SerializeField] private Transform spawnPoint;
     
-    void Start()
-    {
-        GameObject player = PhotonNetwork.Instantiate("Player1", spawnPoint.position, spawnPoint.rotation);
-        PlayerController controller = player.GetComponent<PlayerController>();
-        controller.SetNickname();
-    }
+    //void Start()
+    //{
+    //    GameObject player = PhotonNetwork.Instantiate("Player1", spawnPoint.position, spawnPoint.rotation);
+    //    PlayerController controller = player.GetComponent<PlayerController>();
+    //    controller.SetNickname();
+    //}
 }

@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class LevelManager : AbstractSingleton<LevelManager>
 {
-
     private List<PlayerController> playerList = new List<PlayerController>();
     private List<PlayerController> deathPlayers = new List<PlayerController>();
     [SerializeField] private List<GameObject> spawnPositions = new List<GameObject>();
@@ -24,6 +23,11 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [SerializeField] private GameObject WinScreen, DefeatScreen;
     public PhotonView PhotonView => photonView;
 
+    [SerializeField] private BallSpawner ballSpawner;
+
+    public int team1Points = 0;
+    public int team2Points = 0;
+
     public override void Awake()
     {
         Instance = this;
@@ -32,8 +36,40 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
     private void Start()
     {
-        photonView = GetComponent<PhotonView>();
-        SpawnPositionsGO = GameObject.Find("SPAWNPOINTS");
+        StartMatch();
+    }
+    public void StartMatch()
+    {
+        ballSpawner.SpawnBallToTeam1(true);
+    }
+
+    public void AddPointToTeam1(bool toTeamOne)
+    {
+        if (toTeamOne)
+        {
+            team1Points++;
+
+            if (team1Points >= maxPoints)
+            {
+                SetWinner();
+            }
+        }
+        else
+        {
+            team2Points++;
+
+            if (team2Points >= maxPoints)
+            {
+                SetWinner();
+            }
+        }
+
+   
+    }
+
+    public void SetWinner()
+    {
+
     }
 
     [PunRPC]

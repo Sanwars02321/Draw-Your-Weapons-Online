@@ -58,14 +58,13 @@ public class PlayerController : MonoBehaviourPun
             inputs = GetComponent<PlayerInput>();
             actions = new PlayerActions(); //Instancia las actions
             actions.Enable();
-            photonView.RPC("OnSpawned", RpcTarget.All, playerID);
-            actions.Gameplay.Shoot.performed += Shoot;
+            //actions.Gameplay.Shoot.performed += Shoot;
             initialSpeed = movementSpeed;
-        }
+        }   
 
         playerCollider = GetComponent<Collider2D>();
         lifeController = GetComponent<LifeController>();
-        nickNameCanvas = transform.Find("Canvas").gameObject;
+        
     }
 
     [PunRPC]
@@ -118,18 +117,12 @@ public class PlayerController : MonoBehaviourPun
         {
             CheckTimers();
             forwardAxis = actions.Gameplay.Move.ReadValue<float>();
-            rotationAxis = actions.Gameplay.Rotate.ReadValue<float>();
-
-            
         }
     }
     private void FixedUpdate()
     {
         // Movimiento
-        transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.fixedDeltaTime);
-
-        // Rotaci�n
-        transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.fixedDeltaTime);
+        transform.Translate(Vector3.up * forwardAxis * movementSpeed * Time.fixedDeltaTime);
     }
 
     private void CheckTimers()
@@ -144,23 +137,11 @@ public class PlayerController : MonoBehaviourPun
             }
         }
     }
-    private void Shoot(InputAction.CallbackContext callback)
-    {
-        if (photonView.IsMine && !lifeController.isDead)
-        {
-            if (bulletCooldownTimer <= 0)
-            {
-                GameObject newBulletGO = PhotonNetwork.Instantiate("bullet", transform.position, transform.rotation, 0);
-                newBulletGO.GetComponent<Bullet>().SetOwner(photonView.Owner);
-                bulletCooldownTimer = bulletCooldown;
-            }
-        }
-    }
     private void OnDestroy()
     {
         if (PhotonView.IsMine)
         {
-            actions.Gameplay.Shoot.performed -= Shoot;
+            //actions.Gameplay.Shoot.performed -= Shoot;
         }
     }
 
@@ -177,5 +158,15 @@ public class PlayerController : MonoBehaviourPun
         yield return new WaitForSeconds(time);
         movementSpeed = initialSpeed;
         isOnPowerUp = false;
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision != null && PhotonView.IsMine)
+        {
+            if (collision.gameObject.CompareTag("Ball"))
+            {
+                collision.gameObject.GetComponent<Bullet>().InvertDirX();
+            }
+        }
     }
 }

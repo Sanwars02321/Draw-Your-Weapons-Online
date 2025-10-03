@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviourPun
     [SerializeField] private float speed;
     [SerializeField] private float lifeSpan;
     [SerializeField] private float bulletDamage;
+    [SerializeField] public Vector3 direction;
     private float lifeSpanTimer;
     private Photon.Realtime.Player owner;
     private bool canKillOwner = false;
@@ -19,40 +20,18 @@ public class Bullet : MonoBehaviourPun
 
     void Update()
     {
-        if (photonView.IsMine)
+        if (true)
         {
-            if (lifeSpanTimer > 0)
-            {
-                lifeSpanTimer -= Time.deltaTime;
-                if (lifeSpanTimer <= 0)
-                {
-                    lifeSpanTimer = 0;
-                    PhotonNetwork.Destroy(gameObject);
-                }
-            }
-            transform.Translate(Vector3.right * speed * Time.deltaTime);
+            transform.Translate(direction * speed * Time.deltaTime);
         }
     }
 
-    public void SetOwner(Photon.Realtime.Player newOwner)
+    public void InvertDirY()
     {
-        owner = newOwner;
+        direction.y = -direction.y;
     }
-
-    private void OnTriggerEnter2D(Collider2D other)
+    public void InvertDirX()
     {
-        if (!photonView.IsMine) return; 
-
-        if (other.CompareTag("Player"))        
-        {
-            PhotonView hitView = other.GetComponent<PhotonView>();         //Gets the PhotonView comp from the hit player
-
-            if (hitView != null)
-            {
-                if (hitView.Owner == owner) return;                         // ignora al que disparó, cambiarse para cuando rebote
-                hitView.RPC("TakeDamage", RpcTarget.All, bulletDamage);     //Calls via RPC to the TakeDamage method from lifeController
-                PhotonNetwork.Destroy(gameObject);
-            }
-        }
+        direction.x = -direction.x;
     }
 }

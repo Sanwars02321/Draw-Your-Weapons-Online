@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -4194171153487461514}
   m_Layer: 0
   m_Name: bullet
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,6 +104,7 @@ MonoBehaviour:
   speed: 6
   lifeSpan: 3
   bulletDamage: 1
+  direction: {x: 0, y: 0, z: 0}
 --- !u!58 &5410360131393260932
 CircleCollider2D:
   m_ObjectHideFlags: 0
