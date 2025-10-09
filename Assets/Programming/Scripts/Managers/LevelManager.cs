@@ -25,6 +25,9 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
     [SerializeField] private BallSpawner ballSpawner;
 
+    private List<PlayerController> team1List = new List<PlayerController>();
+    private List<PlayerController> team2List = new List<PlayerController>();
+
     public int team1Points = 0;
     public int team2Points = 0;
 
@@ -51,7 +54,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
             if (team1Points >= maxPoints)
             {
-                SetWinner();
+                SetWinner(1);
             }
         }
         else
@@ -60,16 +63,32 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
             if (team2Points >= maxPoints)
             {
-                SetWinner();
+                SetWinner(2);
             }
         }
 
    
     }
 
-    public void SetWinner()
+    public void SetWinner(int winnerTeam)
     {
-
+        List<int> winnersID = new List<int>();
+        switch(winnerTeam)
+        {
+            case 1:
+                foreach (var player in team1List)
+                {
+                    winnersID.Add(player.photonView.ViewID);
+                }
+                break;
+            case 2:
+                foreach (var player in team2List)
+                {
+                    winnersID.Add(player.photonView.ViewID);
+                }
+                break;
+        }
+        GameEnded(winnersID);
     }
 
     [PunRPC]
@@ -244,17 +263,17 @@ public class LevelManager : AbstractSingleton<LevelManager>
         var winner = CheckWinner();
         if (winner != null)
         {
-            GameEnded(winner);
+            //GameEnded(winner);
         }
         //}
     }
 
-    public void GameEnded(PlayerController winner)
+    public void GameEnded(List<int> winnersID)
     {
         gameEnded = true;
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC("ShowGameResult", RpcTarget.All, winner.photonView.ViewID);
+            photonView.RPC("ShowGameResult", RpcTarget.All, winnersID);
         }
     }
 
@@ -296,7 +315,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
     }
 
     [PunRPC]
-    public void ShowGameResult(int winnerViewID)
+    public void ShowGameResult(List<int> winnerViewID)
     {
         //Check for local player on the list
         PlayerController localPlayer = playerList.Find(p => p.photonView.IsMine);
@@ -305,7 +324,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
         WinScreen.SetActive(false);
         DefeatScreen.SetActive(false);
 
-        if (localPlayer.photonView.ViewID == winnerViewID) //Compare winner ID with local player ID
+        if(winnerViewID.Contains(localPlayer.photonView.ViewID))
         {
             WinScreen.SetActive(true);
         }
