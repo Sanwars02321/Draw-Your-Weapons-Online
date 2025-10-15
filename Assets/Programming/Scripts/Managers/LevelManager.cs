@@ -142,6 +142,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
             SpawnPowerUps();
             ResetSpawnPoints();
             ResetPositions();
+            SendPointsToAll();
         }
 
         UpdateUI();
@@ -218,7 +219,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
         string[] names = playerPoints.Keys.Select(p => p.NickName).ToArray();
         int[] points = playerPoints.Values.ToArray();
 
-        photonView.RPC("SyncPoints", RpcTarget.All, names, points);
+        photonView.RPC("SyncPoints", RpcTarget.AllBuffered, names, points);
     }
 
 
@@ -327,6 +328,8 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [PunRPC]
     public void UpdateUI()
     {
+        DisableUI();
+
         int i = 0;
         foreach (var player in playerPoints)
         {
@@ -341,6 +344,8 @@ public class LevelManager : AbstractSingleton<LevelManager>
             UItext.GetComponent<TextMeshProUGUI>().text = $"{currentPlayer.NickName}: {points}";
             i++;
         }
+
+        
     }
 
     public void DisableUI()
