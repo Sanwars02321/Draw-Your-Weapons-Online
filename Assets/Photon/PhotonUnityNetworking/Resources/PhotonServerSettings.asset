@@ -66,6 +66,8 @@ MonoBehaviour:
   - SpawnPowerUps
   - ResetPos
   - UpdateUI
+  - SetRoundWinner
+  - SyncPoints
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

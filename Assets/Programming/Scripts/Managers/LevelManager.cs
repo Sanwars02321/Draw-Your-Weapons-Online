@@ -27,6 +27,8 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [SerializeField] private GameObject WinScreen, DefeatScreen;
     public PhotonView PhotonView => photonView;
 
+    private PlayerController roundWinner;
+
     public override void Awake()
     {
         Instance = this;
@@ -69,8 +71,10 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 ChangeCurrentRound();
                 ResetPositions();
                 SpawnPowerUps();
-                UpdateUI();
+                //photonView.RPC("UpdateUI", RpcTarget.AllBuffered);
             }
+
+           
         }
 
     }
@@ -135,10 +139,12 @@ public class LevelManager : AbstractSingleton<LevelManager>
         {
             PhotonView.Find(viewId);
             photonView.RPC("RegisterPlayerForAll", RpcTarget.All, viewId);
-            photonView.RPC("SpawnPowerUps", RpcTarget.MasterClient);
-            photonView.RPC("ResetSpawnPoints", RpcTarget.MasterClient);
-            photonView.RPC("ResetPositions", RpcTarget.MasterClient);
+            SpawnPowerUps();
+            ResetSpawnPoints();
+            ResetPositions();
         }
+
+        UpdateUI();
     }
 
 
@@ -166,21 +172,56 @@ public class LevelManager : AbstractSingleton<LevelManager>
         Debug.Log($"{player.NickName} removido");
         CheckRemainingPlayers();
     }
+
+    [PunRPC]
+    public void SyncPoints(string[] playerNames, int[] points)
+    {
+        
+        playerPoints.Clear();
+
+        for (int i = 0; i < playerNames.Length; i++)
+        {
+            
+            var player = playerList.Find(p => p.NickName == playerNames[i]);
+            if (player != null)
+            {
+                playerPoints[player] = points[i];
+            }
+        }
+
+       
+        UpdateUI();
+    }
+
     public void CheckRemainingPlayers()
     {
         if (!gameEnded)
         {
-            if (playerList.Count == 1)
-            {
-                var player = playerList.First();
-                playerPoints[player] += 1;
-                photonView.RPC("StartNewRound", RpcTarget.MasterClient);
-            }
+                if (playerList.Count == 1)
+                {
+                    var player = playerList.First();
+                   
+                    playerPoints[player] += 1;
+                    photonView.RPC("StartNewRound", RpcTarget.MasterClient);
+
+                      if (PhotonNetwork.IsMasterClient)
+                      {
+                         SendPointsToAll();
+                      }
+                }
         }
 
     }
 
-    
+    private void SendPointsToAll()
+    {
+        string[] names = playerPoints.Keys.Select(p => p.NickName).ToArray();
+        int[] points = playerPoints.Values.ToArray();
+
+        photonView.RPC("SyncPoints", RpcTarget.All, names, points);
+    }
+
+
     public PlayerController CheckWinner()
     {
         PlayerController temp = playerList[0];
