@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelManager : AbstractSingleton<LevelManager>
 {
@@ -11,6 +13,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [SerializeField] private List<GameObject> spawnPositions = new List<GameObject>();
     private List<SpeedPowerUp> speedPowerUps = new List<SpeedPowerUp>();
     [SerializeField] private Transform[] powerUpPositions = new Transform[2];
+    [SerializeField] private List<GameObject> namesAndPointsUI = new List<GameObject>();
 
     private bool gameEnded;
 
@@ -62,10 +65,11 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
             if (PhotonNetwork.IsMasterClient)
             {
-                photonView.RPC("ResetSpawnPoints", RpcTarget.MasterClient);
-                photonView.RPC("ChangeCurrentRound", RpcTarget.MasterClient);
-                photonView.RPC("ResetPositions", RpcTarget.MasterClient);
-                photonView.RPC("SpawnPowerUps", RpcTarget.MasterClient);
+                ResetSpawnPoints();
+                ChangeCurrentRound();
+                ResetPositions();
+                SpawnPowerUps();
+                UpdateUI();
             }
         }
 
@@ -279,6 +283,32 @@ public class LevelManager : AbstractSingleton<LevelManager>
         }
     }
 
+    [PunRPC]
+    public void UpdateUI()
+    {
+        int i = 0;
+        foreach (var player in playerPoints)
+        {
+            if (i >= namesAndPointsUI.Count) break;
+
+            GameObject UItext = namesAndPointsUI[i];
+            UItext.SetActive(true);
+
+            PlayerController currentPlayer = player.Key;
+            int points = player.Value;
+
+            UItext.GetComponent<TextMeshProUGUI>().text = $"{currentPlayer.NickName}: {points}";
+            i++;
+        }
+    }
+
+    public void DisableUI()
+    {
+        foreach(var text in namesAndPointsUI)
+        {
+            text.SetActive(false);
+        }
+    }
     public void EndMatch()
     {
          PUNManager.Instance.LeaveRoom();
