@@ -9,9 +9,16 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviourPun
 {
-    [SerializeField][Min(0)] float movementSpeed;
-    [SerializeField][Min(0)] float speedBoostSpeed = 3f;
-    [SerializeField][Min(0)] float initialSpeed;
+    private Weapon currentWeapon;
+
+    [SerializeField][Min(0)] private float movementSpeed;
+    [SerializeField][Min(0)] private float speedBoostSpeed = 3f;
+    [SerializeField][Min(0)] private float initialSpeed;
+
+
+    [SerializeField] private NormalGun normalGunRef;
+    [SerializeField] private Pencil pencilRef;
+
 
 
     [SerializeField][Min(0)] float rotationSpeed;
@@ -20,7 +27,7 @@ public class PlayerController : MonoBehaviourPun
 
     public bool isOnPowerUp { get; private set; }
 
-    public bool HasWon {  get { return hasWon; }  set { hasWon = value; } }
+    public bool HasWon { get { return hasWon; } set { hasWon = value; } }
     private float forwardAxis = 0;
     private float rotationAxis = 0;
 
@@ -62,6 +69,13 @@ public class PlayerController : MonoBehaviourPun
             actions.Gameplay.Shoot.performed += Shoot;
             initialSpeed = movementSpeed;
         }
+        normalGunRef = GetComponent<NormalGun>();
+        normalGunRef.SetWeaponStart(actions.Gameplay.Shoot);
+
+        pencilRef = GetComponent<Pencil>();
+        pencilRef.SetWeaponStart(actions.Gameplay.Shoot);
+
+        currentWeapon = normalGunRef;
 
         playerCollider = GetComponent<Collider2D>();
         lifeController = GetComponent<LifeController>();
@@ -116,44 +130,31 @@ public class PlayerController : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            CheckTimers();
+            currentWeapon.UpdateWeapon();
             forwardAxis = actions.Gameplay.Move.ReadValue<float>();
             rotationAxis = actions.Gameplay.Rotate.ReadValue<float>();
-
-            
         }
     }
     private void FixedUpdate()
     {
-        // Movimiento
-        transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.fixedDeltaTime);
-
-        // Rotaci�n
-        transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.fixedDeltaTime);
-    }
-
-    private void CheckTimers()
-    {
-        //Bullet Cooldown
-        if (bulletCooldownTimer > 0)
+        if (photonView.IsMine)
         {
-            bulletCooldownTimer -= Time.deltaTime;
-            if (bulletCooldownTimer <= 0)
-            {
-                bulletCooldownTimer = 0;
-            }
+            // Movimiento
+            transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.fixedDeltaTime);
+
+            // Rotaci�n
+            transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.fixedDeltaTime);
+
+            //Weapon
+            currentWeapon.FixedUpdateWeapon();
         }
     }
+
     private void Shoot(InputAction.CallbackContext callback)
     {
         if (photonView.IsMine && !lifeController.isDead)
         {
-            if (bulletCooldownTimer <= 0)
-            {
-                GameObject newBulletGO = PhotonNetwork.Instantiate("bullet", transform.position, transform.rotation, 0);
-                newBulletGO.GetComponent<Bullet>().SetOwner(photonView.Owner);
-                bulletCooldownTimer = bulletCooldown;
-            }
+            currentWeapon.Shoot();
         }
     }
     private void OnDestroy()

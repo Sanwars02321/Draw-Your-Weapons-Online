@@ -1,9 +1,10 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public abstract class Weapon : MonoBehaviour
+public abstract class Weapon : MonoBehaviourPun
 {
     [SerializeField] protected bool hasCD;
     [SerializeField] protected float Cooldown;

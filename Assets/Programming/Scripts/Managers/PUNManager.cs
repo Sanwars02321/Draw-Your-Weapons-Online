@@ -112,7 +112,10 @@ public class PUNManager : MonoBehaviourPunCallbacks
     {
         return PhotonNetwork.Instantiate(obj, pos, rot);
     }
-
+    public void DestroyWithPhoton(GameObject obj)
+    {
+        PhotonNetwork.Destroy(obj);
+    }
     public Photon.Realtime.Player[] RoundStartWithPhoton()
     {
         return PhotonNetwork.PlayerList;

@@ -16,9 +16,9 @@ public class NormalGun : Weapon
         base.Shoot();
         if (CDTimer <= 0)
         {
-            GameObject newBulletGO = Instantiate(LOCALBulletPrefab, transform.position, new Quaternion(0, 0, 0, 0));
-            //newBulletGO.GetComponent<Bullet>().SetOwner(photonView.Owner);
-            newBulletGO.GetComponent<LOCALBullet>().SetDirection(MyMath.RotationToDirection(transform.eulerAngles.z));
+            GameObject newBulletGO = PUNManager.Instance.InstantiateWithPhoton("Bullet", transform.position, new Quaternion());
+            newBulletGO.GetComponent<Bullet>().SetOwner(photonView.Owner);
+            newBulletGO.GetComponent<Bullet>().SetDirection(MyMath.RotationToDirection(transform.eulerAngles.z));
             CDTimer = Cooldown;
         }
     }

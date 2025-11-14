@@ -35,8 +35,9 @@ public class Pencil : Weapon
         base.FixedUpdateWeapon();
         if (isDrawing)
         {
-            GameObject circle = Instantiate(LOCALDrawingPrefab);
             
+            GameObject circle = PUNManager.Instance.InstantiateWithPhoton("Drawing", transform.position, new Quaternion());
+
             circle.transform.position = transform.position +  (Vector3)( -1 * spawnOffset * MyMath.RotationToDirection(transform.eulerAngles.z)); 
         }
     }

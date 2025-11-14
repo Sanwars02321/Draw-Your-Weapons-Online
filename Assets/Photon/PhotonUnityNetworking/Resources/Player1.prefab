@@ -253,6 +253,8 @@ GameObject:
   - component: {fileID: 7242747003678047978}
   - component: {fileID: -7113590496277831791}
   - component: {fileID: -2738513402446899599}
+  - component: {fileID: -6906442451926043047}
+  - component: {fileID: 8995424121377936241}
   m_Layer: 6
   m_Name: Player1
   m_TagString: Player
@@ -381,6 +383,8 @@ MonoBehaviour:
   movementSpeed: 4
   speedBoostSpeed: 7
   initialSpeed: 3
+  normalGunRef: {fileID: 0}
+  pencilRef: {fileID: 0}
   rotationSpeed: 160
   textName: {fileID: 264636191416033037}
   bulletCooldown: 1
@@ -491,3 +495,34 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &-6906442451926043047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6008922762810587604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02eebaf4987a4774fbf1572ce6b26f6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasCD: 0
+  Cooldown: 0
+  LOCALDrawingPrefab: {fileID: 0}
+  spawnOffset: 1.2
+--- !u!114 &8995424121377936241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6008922762810587604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 633dc98783d70c145a2680370fa2a4b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasCD: 1
+  Cooldown: 1
+  LOCALBulletPrefab: {fileID: 0}

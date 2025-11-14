@@ -9,9 +9,12 @@ public class Bullet : MonoBehaviourPun
     [SerializeField] private float lifeSpan;
     [SerializeField] private float bulletDamage;
     private float lifeSpanTimer;
+    private Vector2 direction;
     private Photon.Realtime.Player owner;
     private bool canKillOwner = false;
-    
+
+    public Vector2 Direction { get => direction; }
+
     void Start()
     {
         lifeSpanTimer = lifeSpan;
@@ -30,7 +33,7 @@ public class Bullet : MonoBehaviourPun
                     PhotonNetwork.Destroy(gameObject);
                 }
             }
-            transform.Translate(Vector3.right * speed * Time.deltaTime);
+            transform.Translate(direction * speed * Time.deltaTime);
         }
     }
 
@@ -38,14 +41,18 @@ public class Bullet : MonoBehaviourPun
     {
         owner = newOwner;
     }
-
-    private void OnTriggerEnter2D(Collider2D other)
+    public void SetDirection(Vector2 newDirection)
     {
-        if (!photonView.IsMine) return; 
+        direction = newDirection;
+    }
 
-        if (other.CompareTag("Player"))        
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!photonView.IsMine) return;
+
+        if (collision.gameObject.CompareTag("Player"))
         {
-            PhotonView hitView = other.GetComponent<PhotonView>();         //Gets the PhotonView comp from the hit player
+            PhotonView hitView = collision.gameObject.GetComponent<PhotonView>();         //Gets the PhotonView comp from the hit player
 
             if (hitView != null)
             {
@@ -56,5 +63,11 @@ public class Bullet : MonoBehaviourPun
         }
     }
 
+    public void Bounce(Vector2 newDir)
+    {
+        if (!photonView.IsMine) return;
+        SetDirection(newDir);
+        owner = null;
+    }
 
 }
