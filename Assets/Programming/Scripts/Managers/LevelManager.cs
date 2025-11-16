@@ -17,6 +17,8 @@ public class LevelManager : AbstractSingleton<LevelManager>
     private List<SpeedPowerUp> speedPowerUps = new List<SpeedPowerUp>();
     [SerializeField] private Transform[] powerUpPositions = new Transform[2];
     [SerializeField] private List<GameObject> namesAndPointsUI = new List<GameObject>();
+    [SerializeField] private GameObject LevelsContainer;
+    private GameObject currentLevel;
 
     private bool gameEnded;
 
@@ -45,7 +47,33 @@ public class LevelManager : AbstractSingleton<LevelManager>
     {
         photonView = GetComponent<PhotonView>();
         SpawnPositionsGO = GameObject.Find("SPAWNPOINTS");
-        OnPlayerLeft += OnLeftRoom; 
+        OnPlayerLeft += OnLeftRoom;
+        SelectRoundMap();
+    }
+
+    [PunRPC]
+    public void SelectRoundMap()
+    {
+     int mapIndex = Random.Range(0, LevelsContainer.transform.childCount + 1);
+        photonView.RPC("ActivateRoundMap", RpcTarget.AllBuffered, mapIndex);
+    }
+
+    [PunRPC]
+    public void ActivateRoundMap(int mapNumber)
+    {
+        GameObject selectedLevel = LevelsContainer.transform.GetChild(mapNumber).gameObject;
+
+        foreach (Transform child in LevelsContainer.transform)
+        {
+            if (child != selectedLevel)
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
+
+        selectedLevel.SetActive(true);
+
+        currentLevel = selectedLevel;
     }
 
     [PunRPC]
@@ -78,6 +106,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 ChangeCurrentRound();
                 ResetPositions();
                 SpawnPowerUps();
+                SelectRoundMap();
                 //photonView.RPC("UpdateUI", RpcTarget.AllBuffered);
             }
         }
