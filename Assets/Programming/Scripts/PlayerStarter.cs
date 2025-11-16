@@ -9,7 +9,7 @@ public class PlayerStarter : MonoBehaviour
     
     void Start()
     {
-        GameObject player = PhotonNetwork.Instantiate("Player1", spawnPoint.position, spawnPoint.rotation);
+        GameObject player = PUNManager.Instance.InstantiateWithPhoton("Player1", spawnPoint.position, spawnPoint.rotation);
         PlayerController controller = player.GetComponent<PlayerController>();
         controller.SetNickname();
     }

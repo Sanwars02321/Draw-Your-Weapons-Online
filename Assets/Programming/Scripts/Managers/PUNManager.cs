@@ -74,11 +74,6 @@ public class PUNManager : MonoBehaviourPunCallbacks
         ButtonManager.instance.LoadResult(1);
     }
 
-    //public override void OnDisconnected(DisconnectCause cause)
-    //{
-    //    base.OnDisconnected(cause);
-    //}
-
     public override void OnCustomAuthenticationFailed(string error)
     {
         Debug.Log(error);
@@ -108,10 +103,30 @@ public class PUNManager : MonoBehaviourPunCallbacks
         Debug.Log("Room left. Room name: "
            + roomName);
     }
+
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+        LevelManager.Instance.OnPlayerLeft.Invoke(otherPlayer);
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        base.OnMasterClientSwitched(newMasterClient);
+        Debug.Log(newMasterClient.ActorNumber + " is the new Master Client");
+    }
+
     public GameObject InstantiateWithPhoton(string obj, Vector3 pos, Quaternion rot)
     {
         return PhotonNetwork.Instantiate(obj, pos, rot);
     }
+
+    public GameObject InstantiateRoomObjectWithPhoton(string obj, Vector3 pos, Quaternion rot)
+    {
+        return PhotonNetwork.InstantiateRoomObject(obj, pos, rot);
+    }
+
     public void DestroyWithPhoton(GameObject obj)
     {
         PhotonNetwork.Destroy(obj);

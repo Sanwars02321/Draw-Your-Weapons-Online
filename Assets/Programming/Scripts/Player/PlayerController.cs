@@ -91,7 +91,10 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     public void RPC_ToggleCollision(bool action)
     {
-        playerCollider.enabled = action;
+        if(playerCollider != null)
+        {
+            playerCollider.enabled = action;
+        }
     }
 
     [PunRPC]
@@ -100,7 +103,6 @@ public class PlayerController : MonoBehaviourPun
         textName.text = playerName;
         nickName = playerName;
     }
-
 
     [PunRPC]
     public void ResetPos(Vector3 pos, Quaternion rotation)
@@ -139,13 +141,8 @@ public class PlayerController : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            // Movimiento
             transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.fixedDeltaTime);
-
-            // Rotaci�n
             transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.fixedDeltaTime);
-
-            //Weapon
             currentWeapon.FixedUpdateWeapon();
         }
     }

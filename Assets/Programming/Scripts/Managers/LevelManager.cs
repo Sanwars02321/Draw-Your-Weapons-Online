@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class LevelManager : AbstractSingleton<LevelManager>
 {
@@ -29,6 +32,9 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
     private PlayerController roundWinner;
 
+    public Action<Player> OnPlayerLeft;
+    public Action<Player> OnHostChanged;
+
     public override void Awake()
     {
         Instance = this;
@@ -39,6 +45,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
     {
         photonView = GetComponent<PhotonView>();
         SpawnPositionsGO = GameObject.Find("SPAWNPOINTS");
+        OnPlayerLeft += OnLeftRoom; 
     }
 
     [PunRPC]
@@ -73,10 +80,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 SpawnPowerUps();
                 //photonView.RPC("UpdateUI", RpcTarget.AllBuffered);
             }
-
-           
         }
-
     }
 
     private void DestroyAllPowerUps()
@@ -91,6 +95,11 @@ public class LevelManager : AbstractSingleton<LevelManager>
         }
     }
 
+    public void OnLeftRoom(Player player)
+    {
+        RemoveDisconnectedPlayer(player);
+        UpdateUI();
+    }
 
     [PunRPC]
     public void RegisterPlayerForAll(int viewID)
@@ -103,7 +112,6 @@ public class LevelManager : AbstractSingleton<LevelManager>
             {
                 playerList.Add(p_controller);
             }
-
         }
     }
     
@@ -155,7 +163,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
         if (speedPowerUps.Count > 0) return;
         foreach (var powerUp in powerUpPositions)
         {
-            PhotonNetwork.Instantiate("SpeedBoost", powerUp.position, powerUp.rotation, 0);
+            PUNManager.Instance.InstantiateRoomObjectWithPhoton("SpeedBoost", powerUp.position, powerUp.rotation);
             speedPowerUps.Add(powerUp.GetComponent<SpeedPowerUp>());
         }
     }
@@ -192,6 +200,38 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
        
         UpdateUI();
+    }
+
+    public void RemoveDisconnectedPlayer(Player p)
+    {
+        PlayerController playerController = null;
+
+        // Busca el playerController del player que se desconecto
+        foreach (var pc in playerList)
+        {
+            if (pc.photonView.Owner.ActorNumber == p.ActorNumber)
+            {
+                playerController = pc;
+                break;
+            }
+        }
+
+        if (playerController == null)
+        {
+            return;
+        }
+
+        // Se borra al player que se fue de las listas por las dudas
+        playerList.Remove(playerController);
+        if (deathPlayers.Contains(playerController))
+        {
+            deathPlayers.Remove(playerController);
+        }
+
+        if (playerPoints.ContainsKey(playerController))
+        {
+            playerPoints.Remove(playerController);
+        }
     }
 
     public void CheckRemainingPlayers()
@@ -344,8 +384,6 @@ public class LevelManager : AbstractSingleton<LevelManager>
             UItext.GetComponent<TextMeshProUGUI>().text = $"{currentPlayer.NickName}: {points}";
             i++;
         }
-
-        
     }
 
     public void DisableUI()
