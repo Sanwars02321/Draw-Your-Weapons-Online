@@ -19,6 +19,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [SerializeField] private List<GameObject> namesAndPointsUI = new List<GameObject>();
     [SerializeField] private GameObject LevelsContainer;
     private GameObject currentLevel;
+    private int lastMapNumber;
 
     private bool gameEnded;
 
@@ -54,8 +55,16 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [PunRPC]
     public void SelectRoundMap()
     {
-     int mapIndex = Random.Range(0, LevelsContainer.transform.childCount + 1);
-        photonView.RPC("ActivateRoundMap", RpcTarget.AllBuffered, mapIndex);
+        int mapIndex = Random.Range(0, LevelsContainer.transform.childCount);
+        if (mapIndex != lastMapNumber)
+        {
+            photonView.RPC("ActivateRoundMap", RpcTarget.AllBuffered, mapIndex);
+            lastMapNumber = mapIndex;
+        }
+        else
+        {
+            SelectRoundMap();
+        }
     }
 
     [PunRPC]
