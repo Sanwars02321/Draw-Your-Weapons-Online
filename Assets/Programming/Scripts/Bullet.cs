@@ -63,6 +63,7 @@ public class Bullet : MonoBehaviourPun
         }
     }
 
+    [PunRPC]
     public void Bounce(Vector2 newDir)
     {
         if (!photonView.IsMine) return;

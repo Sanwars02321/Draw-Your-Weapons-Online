@@ -21,7 +21,7 @@ public class Bouncable : MonoBehaviourPun
             Bullet bull = collision.gameObject.GetComponent<Bullet>();
             Vector2 newDirection = Vector2.Reflect(bull.Direction, normal);
             //CABMIA LA ROTACION DE LA BALA. PARA ONLINE PASARLO A BULLET
-            bull.Bounce(newDirection);
+            bull.photonView.RPC("Bounce", RpcTarget.AllBuffered, newDirection);
         }
     }
 }
