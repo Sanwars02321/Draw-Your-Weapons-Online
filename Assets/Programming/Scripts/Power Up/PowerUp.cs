@@ -1,9 +1,10 @@
 using Photon.Pun;
 using UnityEngine;
 
+
 public abstract class PowerUp : MonoBehaviourPun
 {
-    [SerializeField] private float lifeSpan = 3f;
+    protected float lifeSpan = 3f;
     [SerializeField] private float detectionRadius = 1f;
 
 

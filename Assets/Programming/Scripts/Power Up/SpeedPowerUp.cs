@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class SpeedPowerUp : PowerUp
 {
-    [SerializeField] private float lifeSpan = 3f;
 
 
     protected override void Update()

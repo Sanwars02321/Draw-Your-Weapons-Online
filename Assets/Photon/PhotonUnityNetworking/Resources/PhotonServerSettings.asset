@@ -71,6 +71,8 @@ MonoBehaviour:
   - ActivateRoundMap
   - SelectRoundMap
   - Bounce
+  - RPC_ApplyEffect
+  - RPC_PencilEffect
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

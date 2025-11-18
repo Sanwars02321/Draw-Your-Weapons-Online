@@ -11,6 +11,8 @@ public class Bullet : MonoBehaviourPun
     private float lifeSpanTimer;
     private Vector2 direction;
     private Photon.Realtime.Player owner;
+    public PlayerController shotBy { get; private set; }
+
     private bool canKillOwner = false;
 
     public Vector2 Direction { get => direction; }
@@ -37,9 +39,10 @@ public class Bullet : MonoBehaviourPun
         }
     }
 
-    public void SetOwner(Photon.Realtime.Player newOwner)
+    public void SetOwner(PhotonView newOwner)
     {
-        owner = newOwner;
+        owner = newOwner.Owner;
+        shotBy = newOwner.GetComponent<PlayerController>();
     }
     public void SetDirection(Vector2 newDirection)
     {

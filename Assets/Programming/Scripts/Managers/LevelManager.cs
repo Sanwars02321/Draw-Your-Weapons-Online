@@ -8,13 +8,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
+public enum PowerUpType
+{
+    SpeedBoost,
+    PencilWeapon,
+}
 public class LevelManager : AbstractSingleton<LevelManager>
 {
 
     private List<PlayerController> playerList = new List<PlayerController>();
     private List<PlayerController> deathPlayers = new List<PlayerController>();
     [SerializeField] private List<GameObject> spawnPositions = new List<GameObject>();
-    private List<SpeedPowerUp> speedPowerUps = new List<SpeedPowerUp>();
+    private List<PowerUp> powerUps = new List<PowerUp>();
     [SerializeField] private Transform[] powerUpPositions = new Transform[2];
     [SerializeField] private List<GameObject> namesAndPointsUI = new List<GameObject>();
     [SerializeField] private GameObject LevelsContainer;
@@ -29,6 +34,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
     private int MaxRounds;
     [SerializeField] private int maxPoints;
     private PhotonView photonView;
+    private readonly int powerUpVarietyAmount = Enum.GetValues(typeof(PowerUpType)).Length;
 
     [SerializeField] private GameObject WinScreen, DefeatScreen;
     public PhotonView PhotonView => photonView;
@@ -106,7 +112,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 DestroyAllPowerUps();
             }
 
-            speedPowerUps.Clear();
+            powerUps.Clear();
 
 
             if (PhotonNetwork.IsMasterClient)
@@ -123,7 +129,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
     private void DestroyAllPowerUps()
     {
-        SpeedPowerUp[] allPowerUps = FindObjectsOfType<SpeedPowerUp>();
+        PowerUp[] allPowerUps = FindObjectsOfType<PowerUp>();
         foreach (var powerUp in allPowerUps)
         {
             if (powerUp != null && powerUp.gameObject != null)
@@ -198,11 +204,14 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [PunRPC]
     public void SpawnPowerUps()
     {
-        if (speedPowerUps.Count > 0) return;
+        if (powerUps.Count > 0) return;
         foreach (var powerUp in powerUpPositions)
         {
-            PUNManager.Instance.InstantiateRoomObjectWithPhoton("SpeedBoost", powerUp.position, powerUp.rotation);
-            speedPowerUps.Add(powerUp.GetComponent<SpeedPowerUp>());
+            int rnd = Random.Range(0, powerUpVarietyAmount);
+            PowerUpType powerUpType = (PowerUpType)rnd;
+            Debug.Log("Spawning Power Up: " + powerUpType.ToString());
+            PUNManager.Instance.InstantiateRoomObjectWithPhoton(powerUpType.ToString(), powerUp.position, powerUp.rotation);
+            powerUps.Add(powerUp.GetComponent<PowerUp>());
         }
     }
 

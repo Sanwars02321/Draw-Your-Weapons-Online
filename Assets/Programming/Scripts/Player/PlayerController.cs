@@ -163,7 +163,17 @@ public class PlayerController : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void ApplyEffect(float lifeSpan)
+    public void RPC_PencilEffect(float lifeSpan)
+    {
+        isOnPowerUp = true;
+        currentWeapon = pencilRef;
+        StartCoroutine(RemoveEffectAfterTime(lifeSpan));
+    }
+
+
+
+    [PunRPC]
+    public void RPC_ApplyEffect(float lifeSpan)
     {
         isOnPowerUp = true;
         movementSpeed = speedBoostSpeed;
@@ -173,7 +183,10 @@ public class PlayerController : MonoBehaviourPun
     private IEnumerator RemoveEffectAfterTime(float time)
     {
         yield return new WaitForSeconds(time);
-        movementSpeed = initialSpeed;
+        if(movementSpeed == initialSpeed)
+        {
+            currentWeapon = normalGunRef;
+        }
         isOnPowerUp = false;
     }
 }
