@@ -184,6 +184,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
             if (!playerPoints.ContainsKey(player))
             {
                 playerPoints.Add(player, 0);
+                player.playerStats.OnMatchStart();
             }
         }
 
@@ -322,6 +323,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
             if (playerPoints[player] >= maxPoints)
             {
                 temp = player;
+                temp.playerStats.OnWin();
                 return temp;
             }
         }
@@ -341,6 +343,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
         var winner = CheckWinner();
         if (winner != null)
         {
+            winner.playerStats.OnRoundWon();
             GameEnded(winner);
         }
         //}

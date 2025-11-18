@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviourPun
 {
     private Weapon currentWeapon;
 
+    public PlayerStats playerStats {get; private set; }
+
+
     [SerializeField][Min(0)] private float movementSpeed;
     [SerializeField][Min(0)] private float speedBoostSpeed = 3f;
     [SerializeField][Min(0)] private float initialSpeed;
@@ -68,6 +71,7 @@ public class PlayerController : MonoBehaviourPun
             photonView.RPC("OnSpawned", RpcTarget.All, playerID);
             actions.Gameplay.Shoot.performed += Shoot;
             initialSpeed = movementSpeed;
+            playerStats = new PlayerStats();
         }
         normalGunRef = GetComponent<NormalGun>();
         normalGunRef.SetWeaponStart(actions.Gameplay.Shoot);
