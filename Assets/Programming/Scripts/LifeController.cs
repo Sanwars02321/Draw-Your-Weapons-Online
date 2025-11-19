@@ -25,8 +25,25 @@ public class LifeController : MonoBehaviourPun
         currentHealth -= damage;
         if (currentHealth <= 0)
         {
+            playerController.playerStats.OnDeath();
             photonView.RPC("Die", RpcTarget.All);
+
+            //PhotonView attackerView = PhotonView.Find(attackerViewID);
+            //if (attackerView != null && attackerView.IsMine)
+            //{
+            //    PlayerController attacker = attackerView.GetComponent<PlayerController>();
+            //    if (attacker != null && attacker.playerStats != null)
+            //    {
+            //        attacker.playerStats.OnKill();
+            //    }
+            //    else
+            //    {
+            //        Debug.LogWarning("Attacker PlayerController or PlayerStats is null.");
+            //    }
+            //}
         }
+
+
     }
 
     [PunRPC]

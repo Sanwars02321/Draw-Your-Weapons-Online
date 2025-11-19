@@ -55,18 +55,22 @@ public class Bullet : MonoBehaviourPun
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            PhotonView hitView = collision.gameObject.GetComponent<PhotonView>();         //Gets the PhotonView comp from the hit player
-            PlayerController hitController = hitView.GetComponent<PlayerController>();
+            PhotonView hitView = collision.gameObject.GetComponent<PhotonView>();
+            if (hitView == null || shotBy == null) return;
+            if (hitView.Owner == owner) return; // Ignora al que disparó
 
-            if (hitView != null)
+            // atacante siendo jugador local
+            if (shotBy.photonView.IsMine)
             {
-                if (hitView.Owner == owner) return;                         // ignora al que dispar�, cambiarse para cuando rebote
-                hitView.RPC("TakeDamage", RpcTarget.All, bulletDamage);     //Calls via RPC to the TakeDamage method from lifeController
-                PhotonNetwork.Destroy(gameObject);
-                hitController.playerStats.OnDeath();
+                if (hitView == shotBy.photonView) return;
                 shotBy.playerStats.OnKill();
             }
+
+            hitView.RPC("TakeDamage", RpcTarget.All, bulletDamage);
+
+            PhotonNetwork.Destroy(gameObject);
         }
+        
     }
 
     [PunRPC]
@@ -74,6 +78,7 @@ public class Bullet : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
         SetDirection(newDir);
+
         owner = null;
     }
 

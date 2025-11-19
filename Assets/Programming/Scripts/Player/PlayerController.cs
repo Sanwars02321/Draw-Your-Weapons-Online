@@ -84,12 +84,14 @@ public class PlayerController : MonoBehaviourPun
         playerCollider = GetComponent<Collider2D>();
         lifeController = GetComponent<LifeController>();
         nickNameCanvas = transform.Find("Canvas").gameObject;
+        playerStats.OnMatchStart();
     }
 
     [PunRPC]
     public void OnSpawned(int playerID)
     {
         Debug.Log("Player ID" + playerID + " joined");
+
     }
 
     [PunRPC]

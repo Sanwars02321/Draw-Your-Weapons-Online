@@ -4,6 +4,7 @@ using System.Linq;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -184,7 +185,6 @@ public class LevelManager : AbstractSingleton<LevelManager>
             if (!playerPoints.ContainsKey(player))
             {
                 playerPoints.Add(player, 0);
-                player.playerStats.OnMatchStart();
             }
         }
 
@@ -323,13 +323,10 @@ public class LevelManager : AbstractSingleton<LevelManager>
             if (playerPoints[player] >= maxPoints)
             {
                 temp = player;
-                temp.playerStats.OnWin();
                 return temp;
             }
         }
         return null;
-        //Debug.Log(temp.NickName);
-        //return temp;
     }
 
     [PunRPC]
@@ -407,12 +404,15 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
         if (localPlayer.photonView.ViewID == winnerViewID) //Compare winner ID with local player ID
         {
+            localPlayer.playerStats.OnWin();
             WinScreen.SetActive(true);
         }
         else
         {
+            
             DefeatScreen.SetActive(true);
         }
+            LootLockerManager.Instance.SendAllStats(localPlayer.playerStats);
     }
 
     [PunRPC]
@@ -445,7 +445,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
     }
     public void EndMatch()
     {
-         PUNManager.Instance.LeaveRoom();
+        PUNManager.Instance.LeaveRoom();
     }
 }
 

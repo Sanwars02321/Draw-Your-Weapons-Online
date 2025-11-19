@@ -31,6 +31,8 @@ public class LootLockerManager : MonoBehaviour
             if (response.success)
             {
                 sessionActive = true;
+                Debug.Log("Joined");
+
             }
             else
             {
@@ -48,19 +50,16 @@ public class LootLockerManager : MonoBehaviour
         }
         
         SubmitScore("total_kills", stats.totalKills);
-        // SubmitScore("total_matches", stats.totalMatches);
-        // SubmitScore("total_wins", stats.totalWins);
-        
-        // SubmitScore("best_kills_single_match", stats.bestKillsSingleMatch);
-        // SubmitScore("longest_survival", (int)stats.longestSurvival);
-        // SubmitScore("best_killstreak", stats.bestKillstreak);
-        
+        SubmitScore("total_matches", stats.totalMatches);
+        SubmitScore("total_wins", stats.totalWins);
+        SubmitScore("best_killstreak", stats.bestKillstreak);
+
         // if (stats.totalDeaths > 0)
         // {
         //     int kdRatio = (stats.totalKills * 100) / stats.totalDeaths;
         //     SubmitScore("kd_ratio", kdRatio);
         // }
-        
+
         // if (stats.totalMatches > 0)
         // {
         //     int winRate = (stats.totalWins * 100) / stats.totalMatches;

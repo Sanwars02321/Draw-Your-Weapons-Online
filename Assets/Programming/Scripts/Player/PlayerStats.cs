@@ -1,3 +1,4 @@
+using UnityEngine;
 public class PlayerStats
 {
     public int totalKills = 0;
@@ -31,7 +32,8 @@ public class PlayerStats
         currentKillstreak++;
         totalKills++;
         currentMatchKills++;
-        
+        Debug.Log("Kill registered. Total kills: " + totalKills);
+
     }
 
     public void OnWin()
@@ -42,11 +44,5 @@ public class PlayerStats
     public void OnRoundWon()
     {
         totalRoundsWon++;
-    }
-
-    public void OnGameEnded()
-    {
-        if (currentMatchKills > bestKillsSingleMatch) 
-        bestKillsSingleMatch = currentMatchKills;
     }
 }
