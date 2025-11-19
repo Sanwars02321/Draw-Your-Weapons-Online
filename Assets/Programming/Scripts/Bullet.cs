@@ -56,19 +56,19 @@ public class Bullet : MonoBehaviourPun
         if (collision.gameObject.CompareTag("Player"))
         {
             PhotonView hitView = collision.gameObject.GetComponent<PhotonView>();
-            if (hitView == null || shotBy == null) return;
+            if (hitView == null) return;
             if (hitView.Owner == owner) return; // Ignora al que disparó
 
+
+            hitView.RPC("TakeDamage", RpcTarget.All, bulletDamage);
+
+            PhotonNetwork.Destroy(gameObject);
             // atacante siendo jugador local
             if (shotBy.photonView.IsMine)
             {
                 if (hitView == shotBy.photonView) return;
                 shotBy.playerStats.OnKill();
             }
-
-            hitView.RPC("TakeDamage", RpcTarget.All, bulletDamage);
-
-            PhotonNetwork.Destroy(gameObject);
         }
         
     }

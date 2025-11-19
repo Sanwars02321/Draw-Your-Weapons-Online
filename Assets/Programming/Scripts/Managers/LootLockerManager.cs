@@ -6,12 +6,22 @@ public class LootLockerManager : MonoBehaviour
     public static LootLockerManager Instance;
     private bool sessionActive = false;
     
+    // Stats acumuladas persistentes
+    private int totalKillsAllTime = 0;
+    private int totalMatchesAllTime = 0;
+    private int totalWinsAllTime = 0;
+    private int currentKillstreak = 0;
+
+    private int totalRoundsWon = 0;
+
+    
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            LoadPersistentStats();
         }
         else
         {
@@ -24,6 +34,29 @@ public class LootLockerManager : MonoBehaviour
         StartGuestSession();
     }
     
+    private void LoadPersistentStats()
+    {
+        // Cargar stats guardadas localmente
+        totalKillsAllTime = PlayerPrefs.GetInt("LootLocker_TotalKills", 0);
+        totalMatchesAllTime = PlayerPrefs.GetInt("LootLocker_TotalMatches", 0);
+        totalWinsAllTime = PlayerPrefs.GetInt("LootLocker_TotalWins", 0);
+        currentKillstreak = PlayerPrefs.GetInt("LootLocker_CurrentKS", 0);
+        totalRoundsWon = PlayerPrefs.GetInt("LootLocker_TotalRoundsWon", 0);
+
+
+        
+        Debug.Log($"Stats cargadas - Kills: {totalKillsAllTime}, Matches: {totalMatchesAllTime}, Wins: {totalWinsAllTime}");
+    }
+    
+    private void SavePersistentStats()
+    {
+        PlayerPrefs.SetInt("LootLocker_TotalKills", totalKillsAllTime);
+        PlayerPrefs.SetInt("LootLocker_TotalMatches", totalMatchesAllTime);
+        PlayerPrefs.SetInt("LootLocker_TotalWins", totalWinsAllTime);
+        PlayerPrefs.SetInt("LootLocker_TotalRoundsWon", totalRoundsWon);
+        PlayerPrefs.Save();
+    }
+    
     private void StartGuestSession()
     {
         LootLockerSDKManager.StartGuestSession((response) =>
@@ -31,8 +64,7 @@ public class LootLockerManager : MonoBehaviour
             if (response.success)
             {
                 sessionActive = true;
-                Debug.Log("Joined");
-
+                Debug.Log("Sesión LootLocker iniciada");
             }
             else
             {
@@ -41,7 +73,7 @@ public class LootLockerManager : MonoBehaviour
         });
     }
     
-    public void SendAllStats(PlayerStats stats)
+    public void SendAllStats(PlayerStats matchStats)
     {
         if (!sessionActive)
         {
@@ -49,22 +81,17 @@ public class LootLockerManager : MonoBehaviour
             return;
         }
         
-        SubmitScore("total_kills", stats.totalKills);
-        SubmitScore("total_matches", stats.totalMatches);
-        SubmitScore("total_wins", stats.totalWins);
-        SubmitScore("best_killstreak", stats.bestKillstreak);
-
-        // if (stats.totalDeaths > 0)
-        // {
-        //     int kdRatio = (stats.totalKills * 100) / stats.totalDeaths;
-        //     SubmitScore("kd_ratio", kdRatio);
-        // }
-
-        // if (stats.totalMatches > 0)
-        // {
-        //     int winRate = (stats.totalWins * 100) / stats.totalMatches;
-        //     SubmitScore("win_rate", winRate);
-        // }
+        totalKillsAllTime += matchStats.currentMatchKills;
+        totalMatchesAllTime++;
+        if (matchStats.totalWins > 0) totalWinsAllTime++;
+        
+        SavePersistentStats();
+        
+        SubmitScore("total_kills", totalKillsAllTime);
+        SubmitScore("total_matches", totalMatchesAllTime);
+        SubmitScore("total_wins", totalWinsAllTime);
+        SubmitScore("best_killstreak", matchStats.bestKillstreak);
+        SubmitScore("rounds_won", matchStats.totalRoundsWon);
     }
     
     private void SubmitScore(string leaderboardKey, int score)

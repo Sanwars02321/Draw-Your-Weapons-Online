@@ -289,7 +289,12 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 if (playerList.Count == 1)
                 {
                     var player = playerList.First();
-                   
+            
+                    if (player.photonView.IsMine && player.playerStats != null)
+                    {
+                       player.playerStats.OnRoundWon();
+                    }
+
                     playerPoints[player] += 1;
                     photonView.RPC("StartNewRound", RpcTarget.MasterClient);
 
@@ -340,7 +345,6 @@ public class LevelManager : AbstractSingleton<LevelManager>
         var winner = CheckWinner();
         if (winner != null)
         {
-            winner.playerStats.OnRoundWon();
             GameEnded(winner);
         }
         //}

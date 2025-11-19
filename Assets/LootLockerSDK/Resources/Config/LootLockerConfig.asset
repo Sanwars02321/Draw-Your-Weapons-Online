@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 182cd195a28310e479cddf7ff82822f8, type: 3}
   m_Name: LootLockerConfig
   m_EditorClassIdentifier: 
-  apiKey: https://e9oze1h4.api.lootlocker.io/
+  apiKey: 
   token: 
   adminToken: 
   refreshToken: 
-  domainKey: e9oze1h4
+  domainKey: 
   gameID: 0
   game_version: 1.0.0.0
-  sdk_version: 3.1.0
-  deviceID: 
+  sdk_version: 
+  deviceID: defaultPlayerId
   url: https://api.lootlocker.io/v1
   adminUrl: https://api.lootlocker.io/admin
   playerUrl: https://api.lootlocker.io/player
