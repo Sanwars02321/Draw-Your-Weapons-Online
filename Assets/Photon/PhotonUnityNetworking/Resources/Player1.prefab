@@ -511,6 +511,7 @@ MonoBehaviour:
   Cooldown: 0
   LOCALDrawingPrefab: {fileID: 0}
   spawnOffset: 1.2
+  circlesPerSecond: 30
 --- !u!114 &8995424121377936241
 MonoBehaviour:
   m_ObjectHideFlags: 0

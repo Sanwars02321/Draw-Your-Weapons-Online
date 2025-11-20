@@ -7,6 +7,8 @@ public class Pencil : Weapon
 {
     [SerializeField] private GameObject LOCALDrawingPrefab;
     [SerializeField] private float spawnOffset;
+    [SerializeField][Min(1)] private int circlesPerSecond;
+    private float spawnTimer = 0;
     private bool isDrawing = false;
     // Start is called before the first frame update
     void Start()
@@ -17,6 +19,7 @@ public class Pencil : Weapon
     public override void Shoot()
     {
         base.Shoot();
+        spawnTimer = 0;//dibuja uno apenas comienza
         isDrawing = true;
         shootActionRef.canceled += CancelDrawing;
     }
@@ -29,16 +32,21 @@ public class Pencil : Weapon
     public void CancelDrawing()
     {
         isDrawing = false;
+        spawnTimer = 0;
     }
-    public override void FixedUpdateWeapon()
+    public override void UpdateWeapon()
     {
-        base.FixedUpdateWeapon();
+        base.UpdateWeapon();
         if (isDrawing)
         {
-            
-            GameObject circle = PUNManager.Instance.InstantiateWithPhoton("Drawing", transform.position, new Quaternion());
-
-            circle.transform.position = transform.position +  (Vector3)( -1 * spawnOffset * MyMath.RotationToDirection(transform.eulerAngles.z)); 
+            spawnTimer -= Time.deltaTime;
+            if (spawnTimer <= 0)//Si ya paso el tiempo para spawnear el siguiente
+            {
+                spawnTimer = (float)(1f / circlesPerSecond);
+                GameObject circle = PUNManager.Instance.InstantiateWithPhoton("Drawing", transform.position, new Quaternion());
+                circle.transform.position = transform.position + (Vector3)(-1 * spawnOffset * MyMath.RotationToDirection(transform.eulerAngles.z));
+            }
         }
     }
+
 }
