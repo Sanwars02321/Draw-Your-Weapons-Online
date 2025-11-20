@@ -62,7 +62,7 @@ public class Bullet : MonoBehaviourPun, IPunObservable
     {
         timeToReachGoal = currentPacketTime - lastPacketTime;
         currentTime += Time.deltaTime;
-        transform.position = Vector3.Lerp(positionAtLastPacket, networkPosition, (float) timeToReachGoal);
+        transform.position = Vector3.Lerp(transform.position, networkPosition, (float) timeToReachGoal);
     }
 
     public void SetOwner(PhotonView newOwner)
