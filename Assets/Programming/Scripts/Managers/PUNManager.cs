@@ -186,14 +186,38 @@ public class PUNManager : MonoBehaviourPunCallbacks
         return PhotonNetwork.PlayerList;
     }
 
-    
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        base.OnJoinRoomFailed(returnCode, message);
+        switch (returnCode)
+        {
+            case 32758: // No existe
+                WarningText.SetText("La sala a la que intenta unirse no existe. Por favor, verifique el nombre ingresado y vuelva a intentarlo. Código de error: " + returnCode);
+                break;
+            case 32765: // Está llena
+                WarningText.SetText("La partida a la que intenta unirse se encuentra completa. Vuelva a intentarlo más tarde. Código de error: " + returnCode);
+                break;
 
-    //public override void OnCreateRoomFailed(short returnCode, string message)
-    //{
-    //    base.OnCreateRoomFailed(returnCode, message);
-    //    OnCreateRoomFail.gameObject.SetActive(true);
-    //    OnCreateRoomFail.SetText(message);
-    //}
+            default:  // Motivo desconocido/otro
+                WarningText.SetText("Error al intentar unirse a la sala. Por favor, vuelva a intentarlo. Código de error: " + returnCode);
+                break;
+        }
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        base.OnCreateRoomFailed(returnCode, message);
+        switch (returnCode)
+        {
+            case 32766:
+                WarningText.SetText("La sala que intenta crear ya existe. Por favor, modifique el nombre ingresado y vuelva a intentarlo. Código de error: " + returnCode);
+                break;
+
+            default:
+                WarningText.SetText("Error al crear la sala. Código de error: " + returnCode);
+                break;
+        }
+    }
 
     public void SetWarning(TextMeshProUGUI warningText, string message)
     {
