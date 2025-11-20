@@ -11,7 +11,7 @@ public class LifeController : MonoBehaviourPun
 
     private void Start()
     {
-        sr = GetComponent<SpriteRenderer>();
+        sr = transform.Find("PlayerSprite").GetComponent<SpriteRenderer>();
 
         LevelManager.Instance.PhotonView.RPC("RoundStarted", RpcTarget.All, photonView.ViewID);
         currentHealth = MaxHealth;

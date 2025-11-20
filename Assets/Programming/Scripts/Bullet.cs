@@ -94,6 +94,9 @@ public class Bullet : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+        PhotonNetwork.SerializationRate = 15;
+        PhotonNetwork.SendRate = 15;
+
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
