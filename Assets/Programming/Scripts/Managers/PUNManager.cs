@@ -15,13 +15,13 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public TextMeshProUGUI WarningText;
 
-   
 
     private List<RoomInfo> cachedRooms = new List<RoomInfo>();
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         cachedRooms = roomList;
+        Debug.Log(roomList.Count);
     }
 
     public bool RoomNameExists(string roomName)
@@ -56,11 +56,11 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        if (RoomNameExists(roomName))
-        {
-            SetWarning(WarningText, "La sala que intenta crear ya existe. Por favor, cambie el nombre ingresado y vuelva a intentarlo.");
-            return;
-        }
+        //if (RoomNameExists(roomName))
+        //{
+        //    SetWarning(WarningText, "La sala que intenta crear ya existe. Por favor, cambie el nombre ingresado y vuelva a intentarlo.");
+        //    return;
+        //}
 
         if (string.IsNullOrEmpty(roomName))
         {
