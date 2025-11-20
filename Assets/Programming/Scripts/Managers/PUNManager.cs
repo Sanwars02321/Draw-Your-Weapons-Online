@@ -13,9 +13,9 @@ public class PUNManager : MonoBehaviourPunCallbacks
     public TMP_InputField roomNameInputField;
     public TMP_InputField playerNameInputField;
 
-    public TextMeshProUGUI OnJoinFail, OnCreateRoomFail, OnSameNameFail;
+    public TextMeshProUGUI WarningText;
 
-    [SerializeField] private List<TextMeshProUGUI> warnings = new List<TextMeshProUGUI>();
+   
 
     private List<RoomInfo> cachedRooms = new List<RoomInfo>();
 
@@ -58,13 +58,13 @@ public class PUNManager : MonoBehaviourPunCallbacks
     {
         if (RoomNameExists(roomName))
         {
-            SetWarning(OnJoinFail, "La sala que intentas crear ya existe. Por favor, cambie el nombre ingresado y vuelva a intentarlo.");
+            SetWarning(WarningText, "La sala que intentas crear ya existe. Por favor, cambie el nombre ingresado y vuelva a intentarlo.");
             return;
         }
 
         if (string.IsNullOrEmpty(roomName))
         {
-            SetWarning(OnCreateRoomFail, "El nombre de la sala está vacío. Por favor, complételo y vuelva a intentarlo.");
+            SetWarning(WarningText, "El nombre de la sala está vacío. Por favor, complételo y vuelva a intentarlo.");
             return;
         }
 
@@ -87,13 +87,13 @@ public class PUNManager : MonoBehaviourPunCallbacks
         if (string.IsNullOrEmpty(roomNameInputField.text))
         {
            
-           SetWarning(OnJoinFail, "El nombre de la sala está vacío. Por favor, complételo y vuelva a intentarlo.");
+           SetWarning(WarningText, "El nombre de la sala está vacío. Por favor, complételo y vuelva a intentarlo.");
             
         }
 
         if (!RoomNameExists(roomName))
         {
-            SetWarning(OnJoinFail, "La sala a la que intentas unirte no existe. Por favor, corrobore el nombre ingresado y vuelva a intentarlo.");
+            SetWarning(WarningText, "La sala a la que intentas unirte no existe. Por favor, corrobore el nombre ingresado y vuelva a intentarlo.");
         }
         
         PhotonNetwork.JoinRoom(roomName);
@@ -203,12 +203,10 @@ public class PUNManager : MonoBehaviourPunCallbacks
     {
         warningText.gameObject.SetActive(true);
         warningText.text = message;
-        foreach(var warnings in warnings)
-        {
-            if (warnings != warningText)
-            {
-                warnings.gameObject.SetActive(false);
-            }
-        }
+    }
+
+    public void DisableWarning()
+    {
+        WarningText.gameObject.SetActive(false);
     }
 }
