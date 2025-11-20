@@ -193,6 +193,8 @@ public class PlayerController : MonoBehaviourPun
         {
             currentWeapon = normalGunRef;
         }
+        movementSpeed = initialSpeed;
+
         isOnPowerUp = false;
     }
 }
