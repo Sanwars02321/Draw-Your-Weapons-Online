@@ -1,7 +1,5 @@
 using UnityEngine;
 using LootLocker.Requests;
-using System.Collections.Generic;
-using TMPro;
 
 public class LootLockerManager : MonoBehaviour
 {
@@ -13,6 +11,7 @@ public class LootLockerManager : MonoBehaviour
     private int totalMatchesAllTime = 0;
     private int totalWinsAllTime = 0;
     private int currentKillstreak = 0;
+
     private int totalRoundsWon = 0;
 
     
@@ -106,38 +105,6 @@ public class LootLockerManager : MonoBehaviour
             else
             {
                 Debug.LogError($"Error enviando a {leaderboardKey}: " + response.errorData.message);
-            }
-        });
-    }
-
-    public void FetchTopHighScore(TextMeshProUGUI playerNames, TextMeshProUGUI playerScore, int leaderboardID)
-    {
-        LootLockerSDKManager.GetScoreList(leaderboardID.ToString(), 10, 0, (response) =>
-        {
-            if (response.success)
-            {
-                string tempPlayerNames = "Names\n";
-                string tempPlayerScores = "Scores\n";
-
-                var members = response.items;
-
-                for(int i= 0; i< members.Length; i++)
-                {
-                    if(members[i].player.name != "")
-                    {
-                        tempPlayerNames += members[i].player.name;
-                    } else
-                    {
-                        tempPlayerNames += members[i].player.id;
-                    }
-                    tempPlayerScores += members[i].score + "\n";
-                    tempPlayerNames += "\n";
-                    playerNames.text = tempPlayerNames;
-                    playerScore.text = tempPlayerScores;
-                }  
-            } else
-            {
-                Debug.Log("Failed" + response.errorData.message);
             }
         });
     }

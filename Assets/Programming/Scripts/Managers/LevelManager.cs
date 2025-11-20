@@ -184,6 +184,9 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [PunRPC]
     public void RoundStarted(int viewId)
     {
+        PhotonView.Find(viewId);
+        photonView.RPC("RegisterPlayerForAll", RpcTarget.All, viewId);
+
         foreach (var player in playerList)
         {
             if (!playerPoints.ContainsKey(player))
@@ -194,6 +197,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
         if (PhotonNetwork.IsMasterClient)
         {
+            PhotonView.Find(viewId);
             photonView.RPC("RegisterPlayerForAll", RpcTarget.All, viewId);
             SpawnPowerUps();
             ResetSpawnPoints();
