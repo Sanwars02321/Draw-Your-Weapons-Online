@@ -52,11 +52,11 @@ public class Bullet : MonoBehaviourPun, IPunObservable
             transform.Translate(direction * speed * Time.deltaTime);
         }
 
-        /*if (!photonView.IsMine)
+        if (!photonView.IsMine)
         {
             transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * 10f);
             transform.rotation = Quaternion.Lerp(transform.rotation, networkRotation, Time.deltaTime * 10f);
-        }*/
+        }
 
     }
 
