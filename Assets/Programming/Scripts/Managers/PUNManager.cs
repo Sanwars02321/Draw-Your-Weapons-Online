@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using Photon.Realtime;
+using System;
 
 public class PUNManager : MonoBehaviourPunCallbacks
 {
@@ -12,6 +13,26 @@ public class PUNManager : MonoBehaviourPunCallbacks
     public TMP_InputField roomNameInputField;
     public TMP_InputField playerNameInputField;
 
+    public TextMeshProUGUI OnJoinFail, OnCreateRoomFail, OnSameNameFail;
+
+    [SerializeField] private List<TextMeshProUGUI> warnings = new List<TextMeshProUGUI>();
+
+    private List<RoomInfo> cachedRooms = new List<RoomInfo>();
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        cachedRooms = roomList;
+    }
+
+    public bool RoomNameExists(string roomName)
+    {
+        foreach (var room in cachedRooms)
+        {
+            if (room.Name == roomName)
+                return true;  
+        }
+        return false;          
+    }
 
     public void Awake()
     {
@@ -52,6 +73,18 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
+        if (string.IsNullOrEmpty(roomNameInputField.text))
+        {
+           
+           SetWarning(OnJoinFail, "El nombre de la sala está vacío. Por favor, complételo y vuelva a intentarlo.");
+            
+        }
+
+        if (!RoomNameExists(roomName))
+        {
+            SetWarning(OnJoinFail, "La sala a la que intentas unirte no existe. Por favor, corrobore el nombre ingresado y vuelva a intentarlo.");
+        }
+        
         PhotonNetwork.JoinRoom(roomName);
     }
 
@@ -67,7 +100,11 @@ public class PUNManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.IsVisible = false;
         LeaveRoom();
     }
-
+    public override void OnErrorInfo(ErrorInfo errorInfo)
+    {
+        base.OnErrorInfo(errorInfo);
+        Debug.Log(errorInfo);
+    }
     public override void OnConnectedToMaster()
     {
         Debug.Log("OnConnectedToMaster() was called by PUN.");
@@ -134,5 +171,32 @@ public class PUNManager : MonoBehaviourPunCallbacks
     public Photon.Realtime.Player[] RoundStartWithPhoton()
     {
         return PhotonNetwork.PlayerList;
+    }
+
+    //public override void OnJoinRandomFailed(short returnCode, string message)
+    //{
+    //    base.OnJoinRandomFailed(returnCode, message);
+    //    OnJoinFail.gameObject.SetActive(true);
+    //    OnJoinFail.SetText(message);
+    //}
+
+    //public override void OnCreateRoomFailed(short returnCode, string message)
+    //{
+    //    base.OnCreateRoomFailed(returnCode, message);
+    //    OnCreateRoomFail.gameObject.SetActive(true);
+    //    OnCreateRoomFail.SetText(message);
+    //}
+
+    public void SetWarning(TextMeshProUGUI warningText, string message)
+    {
+        warningText.gameObject.SetActive(true);
+        warningText.text = message;
+        foreach(var warnings in warnings)
+        {
+            if (warnings != warningText)
+            {
+                warnings.gameObject.SetActive(false);
+            }
+        }
     }
 }
