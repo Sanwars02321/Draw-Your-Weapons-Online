@@ -20,12 +20,6 @@ public class Bullet : MonoBehaviourPun, IPunObservable
     private Vector3 networkPosition;
     private Quaternion networkRotation;
 
-    void Awake()
-    {
-        PhotonNetwork.SerializationRate = 15;
-        PhotonNetwork.SendRate = 15;
-    }
-
     void Start()
     {
         lifeSpanTimer = lifeSpan;
@@ -57,7 +51,6 @@ public class Bullet : MonoBehaviourPun, IPunObservable
             transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * 10f);
             transform.rotation = Quaternion.Lerp(transform.rotation, networkRotation, Time.deltaTime * 10f);
         }
-
     }
 
     public void SetOwner(PhotonView newOwner)
