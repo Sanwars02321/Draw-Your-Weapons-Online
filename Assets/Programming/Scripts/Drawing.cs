@@ -9,6 +9,12 @@ public class Drawing : MonoBehaviourPun
     private float aliveTimer = 0;
     public PhotonView PhotonView => photonView ?? GetComponent<PhotonView>();
 
+    private void Start()
+    {
+        if(!photonView.IsMine) return;
+        LevelManager.Instance.OnRoundChanged.AddListener(DestroyOnRoundChanged);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -20,5 +26,17 @@ public class Drawing : MonoBehaviourPun
                 PUNManager.Instance.DestroyWithPhoton(gameObject);
             } 
         }
+    }
+
+    private void DestroyOnRoundChanged()
+    {
+        if (!photonView.IsMine) return;
+        PUNManager.Instance.DestroyWithPhoton(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (!photonView.IsMine) return;
+        LevelManager.Instance.OnRoundChanged.RemoveListener(DestroyOnRoundChanged);
     }
 }

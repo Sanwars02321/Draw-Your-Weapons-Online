@@ -7,6 +7,7 @@ using Photon.Realtime;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -46,6 +47,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
     public Action<Player> OnPlayerLeft;
     public Action<Player> OnHostChanged;
+    public UnityEvent OnRoundChanged;
 
     public override void Awake()
     {
@@ -130,6 +132,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 SelectRoundMap();
                 //photonView.RPC("UpdateUI", RpcTarget.AllBuffered);
             }
+            OnRoundChanged.Invoke();
         }
     }
 
