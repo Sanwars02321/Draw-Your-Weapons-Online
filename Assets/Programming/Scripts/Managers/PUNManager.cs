@@ -58,7 +58,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
     {
         if (RoomNameExists(roomName))
         {
-            SetWarning(WarningText, "La sala que intentas crear ya existe. Por favor, cambie el nombre ingresado y vuelva a intentarlo.");
+            SetWarning(WarningText, "La sala que intenta crear ya existe. Por favor, cambie el nombre ingresado y vuelva a intentarlo.");
             return;
         }
 
@@ -93,7 +93,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
         if (!RoomNameExists(roomName))
         {
-            SetWarning(WarningText, "La sala a la que intentas unirte no existe. Por favor, corrobore el nombre ingresado y vuelva a intentarlo.");
+            SetWarning(WarningText, "La sala a la que intenta unirse no existe. Por favor, corrobore el nombre ingresado y vuelva a intentarlo.");
         }
         
         PhotonNetwork.JoinRoom(roomName);
