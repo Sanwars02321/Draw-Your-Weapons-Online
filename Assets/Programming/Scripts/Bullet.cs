@@ -17,6 +17,15 @@ public class Bullet : MonoBehaviourPun, IPunObservable
 
     public Vector2 Direction { get => direction; }
 
+    private Vector3 networkPosition;
+    private Quaternion networkRotation;
+
+    void Awake()
+    {
+        PhotonNetwork.SerializationRate = 15;
+        PhotonNetwork.SendRate = 15;
+    }
+
     void Start()
     {
         lifeSpanTimer = lifeSpan;
@@ -42,6 +51,13 @@ public class Bullet : MonoBehaviourPun, IPunObservable
             }
             transform.Translate(direction * speed * Time.deltaTime);
         }
+
+        if (!photonView.IsMine)
+        {
+            transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * 10f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, networkRotation, Time.deltaTime * 10f);
+        }
+
     }
 
     public void SetOwner(PhotonView newOwner)
@@ -94,9 +110,6 @@ public class Bullet : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        PhotonNetwork.SerializationRate = 15;
-        PhotonNetwork.SendRate = 15;
-
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
@@ -104,8 +117,8 @@ public class Bullet : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            transform.position = (Vector3)stream.ReceiveNext();
-            transform.rotation = (Quaternion)stream.ReceiveNext();
+            networkPosition = (Vector3)stream.ReceiveNext();
+            networkRotation = (Quaternion)stream.ReceiveNext();
         }
     }
 
