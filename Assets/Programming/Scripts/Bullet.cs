@@ -26,6 +26,12 @@ public class Bullet : MonoBehaviourPun, IPunObservable
     private Vector3 positionAtLastPacket;
     private Quaternion rotationAtLastPacket;
 
+    private void Awake()
+    {
+        PhotonNetwork.SerializationRate = 120;
+        PhotonNetwork.SendRate = 120;
+    }
+
     void Start()
     {
         lifeSpanTimer = lifeSpan;
@@ -51,7 +57,7 @@ public class Bullet : MonoBehaviourPun, IPunObservable
                 if (lifeSpanTimer <= 0)
                 {
                     lifeSpanTimer = 0;
-                    PhotonNetwork.Destroy(gameObject);
+                    PUNManager.Instance.DestroyWithPhoton(gameObject);
                 }
             }
             transform.Translate(direction * speed * Time.deltaTime);
@@ -62,7 +68,7 @@ public class Bullet : MonoBehaviourPun, IPunObservable
     {
         timeToReachGoal = currentPacketTime - lastPacketTime;
         currentTime += Time.deltaTime;
-        transform.position = Vector3.Lerp(transform.position, networkPosition, (float) timeToReachGoal);
+        transform.position = networkPosition; //Vector3.Lerp(transform.position, networkPosition, (float)timeToReachGoal);
     }
 
     public void SetOwner(PhotonView newOwner)
@@ -122,13 +128,13 @@ public class Bullet : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            currentTime = 0.0;
+            /*currentTime = 0.0;
             positionAtLastPacket = transform.position;
-            rotationAtLastPacket = transform.rotation;
+            rotationAtLastPacket = transform.rotation;*/
             networkPosition = (Vector3)stream.ReceiveNext();
             networkRotation = (Quaternion)stream.ReceiveNext();
-            lastPacketTime = currentPacketTime;
-            currentPacketTime = info.SentServerTime;
+            /*lastPacketTime = currentPacketTime;
+            currentPacketTime = info.SentServerTime;*/
         }
     }
 
