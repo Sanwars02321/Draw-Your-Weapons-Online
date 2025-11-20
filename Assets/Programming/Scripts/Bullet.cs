@@ -67,12 +67,11 @@ public class Bullet : MonoBehaviourPun
 
             hitView.RPC("TakeDamage", RpcTarget.All, bulletDamage);
 
-            PhotonNetwork.Destroy(gameObject);
-            if (shotBy.photonView.IsMine)
+           if (hitView != shotBy.photonView)
             {
-                if (hitView == shotBy.photonView) return;
                 shotBy.playerStats.OnKill();
             }
+            PhotonNetwork.Destroy(gameObject);
         }
     }
 
