@@ -54,7 +54,8 @@ public class Bullet : MonoBehaviourPun//, IPunObservable
                     PUNManager.Instance.DestroyWithPhoton(gameObject);
                 }
             }
-            transform.Translate(direction * speed * Time.deltaTime);
+            //transform.Translate(direction * speed * Time.deltaTime);
+            transform.position = direction * speed * Time.deltaTime;
         }
     }
 
