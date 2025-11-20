@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviourPun, IPunObservable
+public class Bullet : MonoBehaviourPun//, IPunObservable
 {
     [SerializeField] private float speed;
     [SerializeField] private float lifeSpan;
@@ -38,10 +38,10 @@ public class Bullet : MonoBehaviourPun, IPunObservable
 
     void Update()
     {
-        if (!photonView.IsMine)
+        /*if (!photonView.IsMine)
         {
             UpdateWithNetworkInfo();
-        }
+        }*/
 
         if (photonView.IsMine)
         {
