@@ -1455,7 +1455,6 @@ RectTransform:
   - {fileID: 1846512831}
   - {fileID: 1713956300}
   - {fileID: 1769841366}
-  - {fileID: 732248706}
   m_Father: {fileID: 1070722358}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1478,6 +1477,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1070722359}
   Leaderboard: {fileID: 732248703}
+  leaderboardButton: {fileID: 732248703}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -2219,14 +2219,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 732248702}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.8125, y: 1.9125, z: 1}
+  m_LocalScale: {x: 1.8125001, y: 1.9125, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1698158173}
-  m_Father: {fileID: 493776395}
-  m_RootOrder: 6
+  m_Father: {fileID: 1856083696}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5756,6 +5756,7 @@ RectTransform:
   m_Children:
   - {fileID: 1455100983}
   - {fileID: 750832230}
+  - {fileID: 732248706}
   m_Father: {fileID: 493776395}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
