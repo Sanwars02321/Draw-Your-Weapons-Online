@@ -54,8 +54,7 @@ public class Bullet : MonoBehaviourPun//, IPunObservable
                     PUNManager.Instance.DestroyWithPhoton(gameObject);
                 }
             }
-            //transform.Translate(direction * speed * Time.deltaTime);
-            transform.position = direction * speed * Time.deltaTime;
+            transform.Translate(direction * speed * Time.deltaTime);
         }
     }
 
@@ -114,24 +113,24 @@ public class Bullet : MonoBehaviourPun//, IPunObservable
         PhotonNetwork.Destroy(gameObject);
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
-        }
-        else
-        {
-            /*currentTime = 0.0;
-            positionAtLastPacket = transform.position;
-            rotationAtLastPacket = transform.rotation;*/
-            networkPosition = (Vector3)stream.ReceiveNext();
-            networkRotation = (Quaternion)stream.ReceiveNext();
-            /*lastPacketTime = currentPacketTime;
-            currentPacketTime = info.SentServerTime;*/
-        }
-    }
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    if (stream.IsWriting)
+    //    {
+    //        stream.SendNext(transform.position);
+    //        stream.SendNext(transform.rotation);
+    //    }
+    //    else
+    //    {
+    //        /*currentTime = 0.0;
+    //        positionAtLastPacket = transform.position;
+    //        rotationAtLastPacket = transform.rotation;*/
+    //        networkPosition = (Vector3)stream.ReceiveNext();
+    //        networkRotation = (Quaternion)stream.ReceiveNext();
+    //        /*lastPacketTime = currentPacketTime;
+    //        currentPacketTime = info.SentServerTime;*/
+    //    }
+    //}
 
 
     private void OnDestroy()
