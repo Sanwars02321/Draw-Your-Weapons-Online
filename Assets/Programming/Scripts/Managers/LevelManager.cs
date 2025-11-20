@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
+using Photon.Pun.Demo.Asteroids;
 using Photon.Realtime;
 using TMPro;
 using Unity.VisualScripting;
@@ -20,6 +21,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
     private List<PlayerController> playerList = new List<PlayerController>();
     private List<PlayerController> deathPlayers = new List<PlayerController>();
     [SerializeField] private List<GameObject> spawnPositions = new List<GameObject>();
+    [SerializeField] private List<GameObject> bulletList = new List<GameObject>();
     private List<PowerUp> powerUps = new List<PowerUp>();
     [SerializeField] private Transform[] powerUpPositions = new Transform[2];
     [SerializeField] private List<GameObject> namesAndPointsUI = new List<GameObject>();
@@ -114,7 +116,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
             }
 
             powerUps.Clear();
-
+            DestroyAllBullets();
 
             if (PhotonNetwork.IsMasterClient)
             {
@@ -248,6 +250,34 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
        
         UpdateUI();
+    }
+
+    public void AddBulletToList(GameObject bullet)
+    {
+        if (bullet == null) return;
+        if (bulletList.Contains(bullet)) return;
+        bulletList.Add(bullet);
+    }
+
+    public void RemoveBulletFromList(GameObject bullet)
+    {
+        if (bullet == null) return;
+        if (!bulletList.Contains(bullet)) return;
+
+        bulletList.Remove(bullet);
+    }
+
+    private void DestroyAllBullets()
+    {
+        foreach(GameObject bullet in bulletList)
+        {
+            if (bullet != null)
+            {
+                bullet.GetComponent<PhotonView>().RPC("RPC_DestroyBullet", bullet.GetComponent<PhotonView>().Owner);
+            }
+        }
+
+        bulletList.Clear();
     }
 
     public void RemoveDisconnectedPlayer(Player p)

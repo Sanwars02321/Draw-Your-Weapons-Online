@@ -20,6 +20,11 @@ public class Bullet : MonoBehaviourPun
     void Start()
     {
         lifeSpanTimer = lifeSpan;
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            LevelManager.Instance.AddBulletToList(gameObject);
+        }
     }
 
     void Update()
@@ -63,14 +68,12 @@ public class Bullet : MonoBehaviourPun
             hitView.RPC("TakeDamage", RpcTarget.All, bulletDamage);
 
             PhotonNetwork.Destroy(gameObject);
-            // atacante siendo jugador local
             if (shotBy.photonView.IsMine)
             {
                 if (hitView == shotBy.photonView) return;
                 shotBy.playerStats.OnKill();
             }
         }
-        
     }
 
     [PunRPC]
@@ -80,6 +83,17 @@ public class Bullet : MonoBehaviourPun
         SetDirection(newDir);
 
         owner = null;
+    }
+
+    [PunRPC]
+    public void RPC_DestroyBullet()
+    {
+        PhotonNetwork.Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        LevelManager.Instance.RemoveBulletFromList(gameObject);
     }
 
 }
