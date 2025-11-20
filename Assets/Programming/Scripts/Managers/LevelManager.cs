@@ -131,9 +131,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 SpawnPowerUps();
                 SelectRoundMap();
                 photonView.RPC("InvokeRoundChanged", RpcTarget.All);
-                //photonView.RPC("UpdateUI", RpcTarget.AllBuffered);
             }
-            
         }
     }
 
@@ -209,7 +207,6 @@ public class LevelManager : AbstractSingleton<LevelManager>
 
         UpdateUI();
     }
-
 
     [PunRPC]
     public void SpawnPowerUps()
@@ -323,26 +320,33 @@ public class LevelManager : AbstractSingleton<LevelManager>
     {
         if (!gameEnded)
         {
-                if (playerList.Count == 1)
+            if (playerList.Count == 1)
+            {
+                var player = playerList.First();
+
+                if (player.photonView.IsMine && player.playerStats != null)
                 {
-                    var player = playerList.First();
-            
-                    if (player.photonView.IsMine && player.playerStats != null)
-                    {
-                       player.playerStats.OnRoundWon();
-                    }
-
-                    playerPoints[player] += 1;
-                    photonView.RPC("StartNewRound", RpcTarget.MasterClient);
-
-                      if (PhotonNetwork.IsMasterClient)
-                      {
-                         SendPointsToAll();
-                      }
+                    player.playerStats.OnRoundWon();
                 }
-        }
 
+                playerPoints[player] += 1;
+                photonView.RPC("StartNewRound", RpcTarget.MasterClient);
+
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    SendPointsToAll();
+                }
+            }
+            else
+            {
+                if(PhotonNetwork.PlayerList.Count() == 1)       //Este es el caso en el que hay un jugador en el inicio
+                {
+                    photonView.RPC("StartNewRound", RpcTarget.MasterClient);
+                }
+            }
+        }
     }
+
 
     private void SendPointsToAll()
     {
