@@ -26,12 +26,6 @@ public class Bullet : MonoBehaviourPun, IPunObservable
     private Vector3 positionAtLastPacket;
     private Quaternion rotationAtLastPacket;
 
-    private void Awake()
-    {
-        PhotonNetwork.SerializationRate = 120;
-        PhotonNetwork.SendRate = 120;
-    }
-
     void Start()
     {
         lifeSpanTimer = lifeSpan;
