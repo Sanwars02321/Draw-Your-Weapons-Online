@@ -88,12 +88,13 @@ public class PUNManager : MonoBehaviourPunCallbacks
         {
            
            SetWarning(WarningText, "El nombre de la sala está vacío. Por favor, complételo y vuelva a intentarlo.");
-            
+            return;
         }
 
         if (!RoomNameExists(roomName))
         {
             SetWarning(WarningText, "La sala a la que intenta unirse no existe. Por favor, corrobore el nombre ingresado y vuelva a intentarlo.");
+            return;
         }
         
         PhotonNetwork.JoinRoom(roomName);
