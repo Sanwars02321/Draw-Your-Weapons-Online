@@ -130,9 +130,10 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 ResetPositions();
                 SpawnPowerUps();
                 SelectRoundMap();
+                photonView.RPC("InvokeRoundChanged", RpcTarget.All);
                 //photonView.RPC("UpdateUI", RpcTarget.AllBuffered);
             }
-            OnRoundChanged.Invoke();
+            
         }
     }
 
@@ -384,6 +385,11 @@ public class LevelManager : AbstractSingleton<LevelManager>
             GameEnded(winner);
         }
         //}
+    }
+    [PunRPC]
+    public void InvokeRoundChanged()
+    {
+        OnRoundChanged.Invoke();
     }
 
     public void GameEnded(PlayerController winner)
