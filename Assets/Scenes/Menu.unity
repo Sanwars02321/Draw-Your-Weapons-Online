@@ -6001,6 +6001,10 @@ MonoBehaviour:
   OnJoinFail: {fileID: 1700637333}
   OnCreateRoomFail: {fileID: 1625349530}
   OnSameNameFail: {fileID: 816571427}
+  warnings:
+  - {fileID: 1700637333}
+  - {fileID: 1625349530}
+  - {fileID: 816571427}
 --- !u!4 &2107808459
 Transform:
   m_ObjectHideFlags: 0
