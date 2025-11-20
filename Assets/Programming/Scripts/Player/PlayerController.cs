@@ -150,6 +150,7 @@ public class PlayerController : MonoBehaviourPun
             transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.fixedDeltaTime);
             transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.fixedDeltaTime);
             currentWeapon.FixedUpdateWeapon();
+            ExitMatch();
         }
     }
 
@@ -196,5 +197,13 @@ public class PlayerController : MonoBehaviourPun
         movementSpeed = initialSpeed;
 
         isOnPowerUp = false;
+    }
+
+    private void ExitMatch()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PUNManager.Instance.LeaveRoom();
+        }
     }
 }
