@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviourPun
             actions.Gameplay.Shoot.performed += Shoot;
             initialSpeed = movementSpeed;
             playerStats = new PlayerStats();
+            playerStats.OnMatchStart();
         }
         normalGunRef = GetComponent<NormalGun>();
         normalGunRef.SetWeaponStart(actions.Gameplay.Shoot);
@@ -84,7 +85,6 @@ public class PlayerController : MonoBehaviourPun
         playerCollider = GetComponent<Collider2D>();
         lifeController = GetComponent<LifeController>();
         nickNameCanvas = transform.Find("Canvas").gameObject;
-        playerStats.OnMatchStart();
     }
 
     [PunRPC]
