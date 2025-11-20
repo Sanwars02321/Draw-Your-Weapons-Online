@@ -74,6 +74,7 @@ MonoBehaviour:
   - RPC_ApplyEffect
   - RPC_PencilEffect
   - RPC_DestroyBullet
+  - InvokeRoundChanged
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
