@@ -2,17 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ButtonManager : MonoBehaviour
 {
 
    [SerializeField] private Animator animator;
+    [SerializeField] Button Leaderboard;
 
     public static ButtonManager instance;
+
+    public Button leaderboardButton;
 
     private void Awake()
     {
         instance = this;
+        leaderboardButton.onClick.AddListener(() => SceneManager.LoadScene("Leaderboard"));
     }
     public void ConnectToServer()
     {
