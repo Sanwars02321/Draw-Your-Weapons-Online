@@ -48,7 +48,6 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
         DontDestroyOnLoad(gameObject);
 
-        
     }
     public void ConnectToPUN()
     {
@@ -57,6 +56,18 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
+        if (RoomNameExists(roomName))
+        {
+            SetWarning(OnJoinFail, "La sala que intentas crear ya existe. Por favor, cambie el nombre ingresado y vuelva a intentarlo.");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(roomName))
+        {
+            SetWarning(OnCreateRoomFail, "El nombre de la sala está vacío. Por favor, complételo y vuelva a intentarlo.");
+            return;
+        }
+
         var roomOptions = new RoomOptions
         {
             MaxPlayers = 4,
@@ -168,6 +179,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.Destroy(obj);
     }
+
     public Photon.Realtime.Player[] RoundStartWithPhoton()
     {
         return PhotonNetwork.PlayerList;
