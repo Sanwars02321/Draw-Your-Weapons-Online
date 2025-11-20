@@ -13,13 +13,12 @@ public class ButtonManager : MonoBehaviour
 
     public static ButtonManager instance;
 
+    public Button leaderboardButton;
+
     private void Awake()
     {
         instance = this;
-
-        Leaderboard.onClick.AddListener(() => {
-            SceneManager.LoadScene("Leaderboard");
-        });
+        leaderboardButton.onClick.AddListener(() => SceneManager.LoadScene("Leaderboard"));
     }
     public void ConnectToServer()
     {
