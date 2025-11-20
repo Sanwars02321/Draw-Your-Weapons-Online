@@ -112,11 +112,11 @@ public class PUNManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.IsVisible = false;
         LeaveRoom();
     }
-    public override void OnErrorInfo(ErrorInfo errorInfo)
-    {
-        base.OnErrorInfo(errorInfo);
-        Debug.Log(errorInfo);
-    }
+    //public override void OnErrorInfo(ErrorInfo errorInfo)
+    //{
+    //    base.OnErrorInfo(errorInfo);
+    //    Debug.Log(errorInfo);
+    //}
     public override void OnConnectedToMaster()
     {
         Debug.Log("OnConnectedToMaster() was called by PUN.");
