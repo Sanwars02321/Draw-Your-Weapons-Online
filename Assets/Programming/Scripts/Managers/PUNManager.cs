@@ -91,11 +91,11 @@ public class PUNManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        if (!RoomNameExists(roomName))
-        {
-            SetWarning(WarningText, "La sala a la que intenta unirse no existe. Por favor, corrobore el nombre ingresado y vuelva a intentarlo.");
-            return;
-        }
+        //if (!RoomNameExists(roomName))
+        //{
+        //    SetWarning(WarningText, "La sala a la que intenta unirse no existe. Por favor, corrobore el nombre ingresado y vuelva a intentarlo.");
+        //    return;
+        //}
         
         PhotonNetwork.JoinRoom(roomName);
     }
@@ -186,12 +186,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
         return PhotonNetwork.PlayerList;
     }
 
-    //public override void OnJoinRandomFailed(short returnCode, string message)
-    //{
-    //    base.OnJoinRandomFailed(returnCode, message);
-    //    OnJoinFail.gameObject.SetActive(true);
-    //    OnJoinFail.SetText(message);
-    //}
+    
 
     //public override void OnCreateRoomFailed(short returnCode, string message)
     //{
