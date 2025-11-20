@@ -1477,8 +1477,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1070722359}
+<<<<<<< Updated upstream
   Leaderboard: {fileID: 732248703}
+=======
   leaderboardButton: {fileID: 2004597701}
+>>>>>>> Stashed changes
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,18 +13,13 @@ public class Bullet : MonoBehaviourPun, IPunObservable
     private Photon.Realtime.Player owner;
     public PlayerController shotBy { get; private set; }
 
-    // Variables para interpolación
-    private Vector3 networkPosition;
-    private Quaternion networkRotation;
-    [SerializeField] private float interpolationSpeed = 15f; // Velocidad de interpolación
+    private bool canKillOwner = false;
 
     public Vector2 Direction { get => direction; }
 
     void Start()
     {
         lifeSpanTimer = lifeSpan;
-        networkPosition = transform.position;
-        networkRotation = transform.rotation;
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -36,7 +31,6 @@ public class Bullet : MonoBehaviourPun, IPunObservable
     {
         if (photonView.IsMine)
         {
-            // El dueño mueve la bala normalmente
             if (lifeSpanTimer > 0)
             {
                 lifeSpanTimer -= Time.deltaTime;
@@ -48,12 +42,6 @@ public class Bullet : MonoBehaviourPun, IPunObservable
             }
             transform.Translate(direction * speed * Time.deltaTime);
         }
-        else
-        {
-            // Los clientes remotos interpolan hacia la posición de red
-            transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * interpolationSpeed);
-            transform.rotation = Quaternion.Lerp(transform.rotation, networkRotation, Time.deltaTime * interpolationSpeed);
-        }
     }
 
     public void SetOwner(PhotonView newOwner)
@@ -61,7 +49,6 @@ public class Bullet : MonoBehaviourPun, IPunObservable
         owner = newOwner.Owner;
         shotBy = newOwner.GetComponent<PlayerController>();
     }
-
     public void SetDirection(Vector2 newDirection)
     {
         direction = newDirection;
@@ -70,27 +57,22 @@ public class Bullet : MonoBehaviourPun, IPunObservable
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!photonView.IsMine) return;
-        if (collision.gameObject.CompareTag("Bullet")) return;
+
+        if (collision.gameObject.CompareTag("Bullet")) return; // Por si acaso, aunque la colision es ignorada desde la matrix de project settings
 
         if (collision.gameObject.CompareTag("Player"))
         {
             PhotonView hitView = collision.gameObject.GetComponent<PhotonView>();
             if (hitView == null) return;
-            if (owner != null && hitView.Owner == owner) return;
+            if (hitView.Owner == owner) return; // Ignora al que disparó
 
-            // Registrar kill si aplica
-            if (shotBy != null && shotBy.photonView.IsMine && shotBy.playerStats != null)
-            {
-                if (hitView != shotBy.photonView)
-                {
-                    shotBy.playerStats.OnKill();
-                }
-            }
 
-            // Hacer daño
             hitView.RPC("TakeDamage", RpcTarget.All, bulletDamage);
 
-            // Destruir bala
+           if (hitView != shotBy.photonView)
+            {
+                shotBy.playerStats.OnKill();
+            }
             PhotonNetwork.Destroy(gameObject);
         }
     }
@@ -100,6 +82,7 @@ public class Bullet : MonoBehaviourPun, IPunObservable
     {
         if (!photonView.IsMine) return;
         SetDirection(newDir);
+
         owner = null;
     }
 
@@ -113,24 +96,20 @@ public class Bullet : MonoBehaviourPun, IPunObservable
     {
         if (stream.IsWriting)
         {
-            // El dueño envía posición y rotación
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
         }
         else
         {
-            // Los clientes remotos reciben y GUARDAN para interpolar
-            networkPosition = (Vector3)stream.ReceiveNext();
-            networkRotation = (Quaternion)stream.ReceiveNext();
-            // NO asignamos directamente, dejamos que Update() interpole
+            transform.position = (Vector3)stream.ReceiveNext();
+            transform.rotation = (Quaternion)stream.ReceiveNext();
         }
     }
 
+
     private void OnDestroy()
     {
-        if (LevelManager.Instance != null)
-        {
-            LevelManager.Instance.RemoveBulletFromList(gameObject);
-        }
+        LevelManager.Instance.RemoveBulletFromList(gameObject);
     }
+
 }
