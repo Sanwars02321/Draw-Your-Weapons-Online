@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviourPun
+public class Bullet : MonoBehaviourPun, IPunObservable
 {
     [SerializeField] private float speed;
     [SerializeField] private float lifeSpan;
@@ -58,6 +58,8 @@ public class Bullet : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
+        if (collision.gameObject.CompareTag("Bullet")) return; // Por si acaso, aunque la colision es ignorada desde la matrix de project settings
+
         if (collision.gameObject.CompareTag("Player"))
         {
             PhotonView hitView = collision.gameObject.GetComponent<PhotonView>();
@@ -89,6 +91,21 @@ public class Bullet : MonoBehaviourPun
     {
         PhotonNetwork.Destroy(gameObject);
     }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+        }
+        else
+        {
+            transform.position = (Vector3)stream.ReceiveNext();
+            transform.rotation = (Quaternion)stream.ReceiveNext();
+        }
+    }
+
 
     private void OnDestroy()
     {
