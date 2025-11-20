@@ -44,6 +44,8 @@ public class PlayerController : MonoBehaviourPun
     private float bulletCooldownTimer = 0;
     private int playerID;
 
+    private Coroutine removeEffectsRoutine;
+
     private LifeController lifeController;
     private GameObject nickNameCanvas;
     private Collider2D playerCollider;
@@ -72,6 +74,7 @@ public class PlayerController : MonoBehaviourPun
             actions.Gameplay.Shoot.performed += Shoot;
             initialSpeed = movementSpeed;
             playerStats = new PlayerStats();
+            LevelManager.Instance.OnRoundChanged.AddListener(RemoveEffects);
         }
         normalGunRef = GetComponent<NormalGun>();
         normalGunRef.SetWeaponStart(actions.Gameplay.Shoot);
@@ -166,6 +169,7 @@ public class PlayerController : MonoBehaviourPun
         if (PhotonView.IsMine)
         {
             actions.Gameplay.Shoot.performed -= Shoot;
+            LevelManager.Instance.OnRoundChanged.RemoveListener(RemoveEffects);
         }
     }
 
@@ -184,19 +188,26 @@ public class PlayerController : MonoBehaviourPun
     {
         isOnPowerUp = true;
         movementSpeed = speedBoostSpeed;
-        StartCoroutine(RemoveEffectAfterTime(lifeSpan));
+        removeEffectsRoutine = StartCoroutine(RemoveEffectAfterTime(lifeSpan));
     }
 
     private IEnumerator RemoveEffectAfterTime(float time)
     {
         yield return new WaitForSeconds(time);
-        if(movementSpeed == initialSpeed)
+        RemoveEffects();
+    }
+    private void RemoveEffects()
+    {
+        if (movementSpeed == initialSpeed)
         {
             currentWeapon = normalGunRef;
         }
         movementSpeed = initialSpeed;
 
         isOnPowerUp = false;
+
+        if(removeEffectsRoutine != null) StopCoroutine(removeEffectsRoutine);
+        removeEffectsRoutine = null;
     }
 
     private void ExitMatch()
@@ -206,4 +217,5 @@ public class PlayerController : MonoBehaviourPun
             PUNManager.Instance.LeaveRoom();
         }
     }
+    
 }
