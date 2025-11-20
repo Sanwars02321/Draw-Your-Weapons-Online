@@ -43,8 +43,8 @@ public class Pencil : Weapon
             if (spawnTimer <= 0)//Si ya paso el tiempo para spawnear el siguiente
             {
                 spawnTimer = (float)(1f / circlesPerSecond);
-                GameObject circle = PUNManager.Instance.InstantiateWithPhoton("Drawing", transform.position, new Quaternion());
-                circle.transform.position = transform.position + (Vector3)(-1 * spawnOffset * MyMath.RotationToDirection(transform.eulerAngles.z));
+                GameObject circle = PUNManager.Instance.InstantiateWithPhoton("Drawing", transform.position + (Vector3)(-1 * spawnOffset * MyMath.RotationToDirection(transform.eulerAngles.z)), new Quaternion());
+                
             }
         }
     }
