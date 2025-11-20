@@ -58,21 +58,24 @@ public class LevelManager : AbstractSingleton<LevelManager>
         photonView = GetComponent<PhotonView>();
         SpawnPositionsGO = GameObject.Find("SPAWNPOINTS");
         OnPlayerLeft += OnLeftRoom;
-        SelectRoundMap();
+        photonView.RPC("SelectRoundMap", RpcTarget.MasterClient);
     }
 
     [PunRPC]
     public void SelectRoundMap()
     {
-        int mapIndex = Random.Range(0, LevelsContainer.transform.childCount);
-        if (mapIndex != lastMapNumber)
+        if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC("ActivateRoundMap", RpcTarget.AllBuffered, mapIndex);
-            lastMapNumber = mapIndex;
-        }
-        else
-        {
-            SelectRoundMap();
+            int mapIndex = Random.Range(0, LevelsContainer.transform.childCount);
+            if (mapIndex != lastMapNumber)
+            {
+                photonView.RPC("ActivateRoundMap", RpcTarget.AllBuffered, mapIndex);
+                lastMapNumber = mapIndex;
+            }
+            else
+            {
+                SelectRoundMap();
+            }
         }
     }
 
