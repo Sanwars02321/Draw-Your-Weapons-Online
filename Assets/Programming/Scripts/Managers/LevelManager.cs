@@ -337,6 +337,14 @@ public class LevelManager : AbstractSingleton<LevelManager>
         {
             playerPoints.Remove(playerController);
         }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (PhotonNetwork.PlayerList.Count() == 1)
+            {
+                PracticeSign.SetActive(true);
+            }
+        }
     }
 
     public void CheckRemainingPlayers()
@@ -492,19 +500,22 @@ public class LevelManager : AbstractSingleton<LevelManager>
     {
         DisableUI();
 
-        int i = 0;
-        foreach (var player in playerPoints)
+        if (PhotonNetwork.PlayerList.Count() > 1)
         {
-            if (i >= namesAndPointsUI.Count) break;
+            int i = 0;
+            foreach (var player in playerPoints)
+            {
+                if (i >= namesAndPointsUI.Count) break;
 
-            GameObject UItext = namesAndPointsUI[i];
-            UItext.SetActive(true);
+                GameObject UItext = namesAndPointsUI[i];
+                UItext.SetActive(true);
 
-            PlayerController currentPlayer = player.Key;
-            int points = player.Value;
+                PlayerController currentPlayer = player.Key;
+                int points = player.Value;
 
-            UItext.GetComponent<TextMeshProUGUI>().text = $"{currentPlayer.NickName}: {points}";
-            i++;
+                UItext.GetComponent<TextMeshProUGUI>().text = $"{currentPlayer.NickName}: {points}";
+                i++;
+            }
         }
     }
 
