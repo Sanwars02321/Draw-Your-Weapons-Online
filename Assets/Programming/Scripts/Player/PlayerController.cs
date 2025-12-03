@@ -47,11 +47,13 @@ public class PlayerController : MonoBehaviourPun
     private Coroutine removeEffectsRoutine;
 
     private LifeController lifeController;
-    private GameObject nickNameCanvas;
-    private Collider2D playerCollider;
+    [SerializeField] private GameObject nickNameCanvas;
+    [SerializeField] private Collider2D playerCollider;
+
+    public GameObject NickNameCanvas { get { return nickNameCanvas; } set { nickNameCanvas = value; } }
+    public Collider2D PlayerCollider { get { return playerCollider; } set { playerCollider = value; } }
 
     [SerializeField] private string nickName;
-
     private bool isDead;
 
     public bool IsDead { get { return isDead; } set { isDead = value; } }
@@ -84,9 +86,7 @@ public class PlayerController : MonoBehaviourPun
 
         currentWeapon = normalGunRef;
 
-        playerCollider = GetComponent<Collider2D>();
         lifeController = GetComponent<LifeController>();
-        nickNameCanvas = transform.Find("Canvas").gameObject;
         playerStats.OnMatchStart();
     }
 

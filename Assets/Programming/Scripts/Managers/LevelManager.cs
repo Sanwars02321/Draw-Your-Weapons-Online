@@ -40,7 +40,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
     private PhotonView photonView;
     private readonly int powerUpVarietyAmount = Enum.GetValues(typeof(PowerUpType)).Length;
 
-    [SerializeField] private GameObject WinScreen, DefeatScreen;
+    [SerializeField] private GameObject WinScreen, DefeatScreen, PracticeSign;
     public PhotonView PhotonView => photonView;
 
     private PlayerController roundWinner;
@@ -131,6 +131,15 @@ public class LevelManager : AbstractSingleton<LevelManager>
                 SpawnPowerUps();
                 SelectRoundMap();
                 photonView.RPC("InvokeRoundChanged", RpcTarget.All);
+
+                if (PhotonNetwork.PlayerList.Count() == 1)
+                {
+                    PracticeSign.SetActive(true);
+                }
+                else
+                {
+                    PracticeSign.SetActive(false);
+                }
             }
         }
     }
@@ -203,6 +212,15 @@ public class LevelManager : AbstractSingleton<LevelManager>
             ResetSpawnPoints();
             ResetPositions();
             SendPointsToAll();
+
+            if (PhotonNetwork.PlayerList.Count() == 1)
+            {
+                PracticeSign.SetActive(true);
+            }
+            else
+            {
+                PracticeSign.SetActive(false);
+            }
         }
 
         UpdateUI();
