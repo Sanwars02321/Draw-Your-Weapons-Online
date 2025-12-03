@@ -176,7 +176,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
             PlayerController p_controller = pv.GetComponent<PlayerController>();
             if (p_controller != null && !playerList.Contains(p_controller))
             {
-                playerList.Add(p_controller);
+                playerList.Remove(p_controller);
             }
         }
     }
@@ -459,7 +459,6 @@ public class LevelManager : AbstractSingleton<LevelManager>
         }
         else
         {
-            
             DefeatScreen.SetActive(true);
         }
             LootLockerManager.Instance.SendAllStats(localPlayer.playerStats);

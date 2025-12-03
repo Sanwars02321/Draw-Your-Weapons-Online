@@ -19,13 +19,14 @@ public class CloudObject : MonoBehaviourPun, IPunObservable
         lifeTimer = lifeTime;
         networkPosition = transform.position;
         moveDirection = moveDirection.normalized;
+        int random = Random.Range(0, 10);
+        moveDirection = (random % 2 == 0) ? moveDirection : Vector2.left;
     }
 
     void Update()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            // Solo el Master mueve
             transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
 
             lifeTimer -= Time.deltaTime;
@@ -36,7 +37,6 @@ public class CloudObject : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            // Los clientes interpolan
             transform.position = Vector3.Lerp(
                 transform.position,
                 networkPosition,
