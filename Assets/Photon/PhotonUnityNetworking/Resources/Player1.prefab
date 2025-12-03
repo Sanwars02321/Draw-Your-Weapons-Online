@@ -467,6 +467,8 @@ MonoBehaviour:
   rotationSpeed: 160
   textName: {fileID: 264636191416033037}
   bulletCooldown: 1
+  nickNameCanvas: {fileID: 1899505920395016709}
+  playerCollider: {fileID: -7113590496277831791}
   nickName: 
 --- !u!114 &7852941040654627543
 MonoBehaviour:

@@ -22,28 +22,13 @@ public class LifeController : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
+        playerController.playerStats.OnDeath();
+
         currentHealth -= damage;
         if (currentHealth <= 0)
         {
-            playerController.playerStats.OnDeath();
             photonView.RPC("Die", RpcTarget.All);
-
-            //PhotonView attackerView = PhotonView.Find(attackerViewID);
-            //if (attackerView != null && attackerView.IsMine)
-            //{
-            //    PlayerController attacker = attackerView.GetComponent<PlayerController>();
-            //    if (attacker != null && attacker.playerStats != null)
-            //    {
-            //        attacker.playerStats.OnKill();
-            //    }
-            //    else
-            //    {
-            //        Debug.LogWarning("Attacker PlayerController or PlayerStats is null.");
-            //    }
-            //}
         }
-
-
     }
 
     [PunRPC]
@@ -51,18 +36,26 @@ public class LifeController : MonoBehaviourPun
     {
         if (isDead) return;
 
+        isDead = true;
+        if (sr != null)
+            sr.enabled = false;
+        else
+            Debug.LogError("SR ES NULO en " + gameObject.name);
+
+        if (playerController.PlayerCollider != null)
+            playerController.PlayerCollider.enabled = false;
+        else
+            Debug.LogError("COLLIDER ES NULO en " + gameObject.name);
+
+        if (playerController.NickNameCanvas != null)
+            playerController.NickNameCanvas.SetActive(false);
+        else
+            Debug.LogError("CANVAS ES NULO en " + gameObject.name);
+
+        // desactivar controles SOLO del que se murio localmente
         if (photonView.IsMine)
         {
             playerController.enabled = false;
-        }
-
-        sr.enabled = false;
-        isDead = true;
-        photonView.RPC("RPC_ToggleCollision", RpcTarget.All, false);
-        photonView.RPC("RPC_ToggleNameTag", RpcTarget.All, false);
-
-        if (photonView.IsMine)
-        {
             LevelManager.Instance.PhotonView.RPC("RemovePlayer", RpcTarget.MasterClient, playerController.photonView.ViewID);
         }
     }
