@@ -29,6 +29,7 @@ public class LevelManager : AbstractSingleton<LevelManager>
     [SerializeField] private GameObject LevelsContainer;
     private GameObject currentLevel;
     private int lastMapNumber;
+   [SerializeField] private GameObject PausePanel;
 
     private bool gameEnded;
 
@@ -48,6 +49,10 @@ public class LevelManager : AbstractSingleton<LevelManager>
     public Action<Player> OnPlayerLeft;
     public Action<Player> OnHostChanged;
     public UnityEvent OnRoundChanged;
+
+    private bool isPaused;
+
+    public bool IsPaused => isPaused;
 
     public override void Awake()
     {
@@ -514,5 +519,19 @@ public class LevelManager : AbstractSingleton<LevelManager>
     {
         PUNManager.Instance.LeaveRoom();
     }
+
+    public void PauseGame()
+    {
+        PausePanel.SetActive(true);
+        isPaused = true;
+    }
+
+    public void ResumeGame()
+    {
+        PausePanel.SetActive(false);
+        isPaused = false;
+    }
+
+    
 }
 

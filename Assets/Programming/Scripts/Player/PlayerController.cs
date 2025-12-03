@@ -46,6 +46,8 @@ public class PlayerController : MonoBehaviourPun
 
     private Coroutine removeEffectsRoutine;
 
+   
+
     private LifeController lifeController;
     [SerializeField] private GameObject nickNameCanvas;
     [SerializeField] private Collider2D playerCollider;
@@ -141,25 +143,32 @@ public class PlayerController : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            currentWeapon.UpdateWeapon();
-            forwardAxis = actions.Gameplay.Move.ReadValue<float>();
-            rotationAxis = actions.Gameplay.Rotate.ReadValue<float>();
+            if (!LevelManager.Instance.IsPaused)
+            {
+                currentWeapon.UpdateWeapon();
+                forwardAxis = actions.Gameplay.Move.ReadValue<float>();
+                rotationAxis = actions.Gameplay.Rotate.ReadValue<float>();
+                PauseGame();
+            }
         }
     }
     private void FixedUpdate()
     {
         if (photonView.IsMine)
         {
-            transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.fixedDeltaTime);
-            transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.fixedDeltaTime);
-            currentWeapon.FixedUpdateWeapon();
-            ExitMatch();
+            if (!LevelManager.Instance.IsPaused) 
+            {
+                transform.Translate(Vector3.right * forwardAxis * movementSpeed * Time.fixedDeltaTime);
+                transform.Rotate(Vector3.forward * -rotationAxis * rotationSpeed * Time.fixedDeltaTime);
+                currentWeapon.FixedUpdateWeapon();
+            }
+           
         }
     }
 
     private void Shoot(InputAction.CallbackContext callback)
     {
-        if (photonView.IsMine && !lifeController.isDead)
+        if (photonView.IsMine && !lifeController.isDead && !LevelManager.Instance.IsPaused)
         {
             currentWeapon.Shoot();
         }
@@ -210,11 +219,11 @@ public class PlayerController : MonoBehaviourPun
         removeEffectsRoutine = null;
     }
 
-    private void ExitMatch()
+    private void PauseGame()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            PUNManager.Instance.LeaveRoom();
+            LevelManager.Instance.PauseGame();
         }
     }
     
