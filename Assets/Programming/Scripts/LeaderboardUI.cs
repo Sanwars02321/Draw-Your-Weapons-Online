@@ -14,6 +14,8 @@ public class LeaderboardUI : MonoBehaviour
         playerNames.enabled = false;
         playerScores.enabled = false;
 
+        
+
         TopWinners.onClick.AddListener(()=> GetLeaderBoard(32136));
         TopKillers.onClick.AddListener(()=> GetLeaderBoard(32135));
         backToMenu.onClick.AddListener(()=> SceneManager.LoadScene("Menu"));

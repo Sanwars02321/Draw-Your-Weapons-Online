@@ -2773,7 +2773,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 908942347}
-  - component: {fileID: 908942346}
   m_Layer: 0
   m_Name: LootLockerManager
   m_TagString: Untagged
@@ -2781,18 +2780,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &908942346
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 908942345}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42b92615853487c4187611eb88f878f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &908942347
 Transform:
   m_ObjectHideFlags: 0
