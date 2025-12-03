@@ -43,7 +43,6 @@ public class ShuffleElement : ScriptableObject
         //    SelectedAudioName();
         //    return;
         //}
-        CurrentAudio = AudioManager.Instance.RandomSound(Audios);
 
        
         

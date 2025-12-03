@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ public class Music
     public string musicID;
 }
 
-public class AudioManager : MonoBehaviour, IShuffle
+public class AudioManager : MonoBehaviourPun
 {
     public static AudioManager Instance { get; private set; }
 
@@ -31,12 +32,8 @@ public class AudioManager : MonoBehaviour, IShuffle
     
     private Dictionary<string, AudioClip> IdAndClip = new Dictionary<string, AudioClip>();
 
-
-    private float normalPitch = 1.0f;
     public AudioSource MusicAudioSource => musicAudioSource;
 
-    [SerializeField] private List<ShuffleElement> shufflesList = new List<ShuffleElement>();
-    public List<ShuffleElement> ShuffleData { get => shufflesList; set => shufflesList = value; }
 
     void Awake()
     {
@@ -49,13 +46,6 @@ public class AudioManager : MonoBehaviour, IShuffle
             Instance = this;
         }
         DontDestroyOnLoad(gameObject);
-
-        //AddAudiosToDicctionary();
-
-        //foreach(var shuffle in shufflesList)
-        //{
-        //    shuffle.Awake();
-        //}
     }
 
     void Start()
@@ -63,18 +53,14 @@ public class AudioManager : MonoBehaviour, IShuffle
         AddAudiosToDicctionary();
     }
 
-    //public AudioClip GetSoundClipFromID(string id)
-    //{
-    //    for (int i = 0; i < GameSounds.Length; i++)
-    //    {
-    //        var sound = GameSounds[i];
-    //        if (sound.soundID.ToLower() == id.ToLower())
-    //        {
-    //            return sound.clip;
-    //        }
-    //    }
-    //    return default;
-    //}
+  public void PlayLocalSoundClip(string id)//Suena solo de manera local
+  {
+        PlaySoundClip(id);
+  }
+    public void PlayMultiplayerSoundClip(string id)//Suena en todas las PCs
+    {
+        photonView.RPC("PlaySoundClip", RpcTarget.AllBuffered,id);
+    }
     
     public void AddAudiosToDicctionary()
     {
@@ -147,8 +133,8 @@ public class AudioManager : MonoBehaviour, IShuffle
         yield return new WaitForSeconds(time);
     }
 
-
-    public void PlaySoundClip(string id)
+    [PunRPC]
+    private void PlaySoundClip(string id)
     {
         AudioClip clipToPlay = GetSoundClipFromID(id);
 
@@ -195,64 +181,6 @@ public class AudioManager : MonoBehaviour, IShuffle
     {
         musicAudioSource?.Stop();
     }
-
-    public string RandomSound(List<string> sounds)
-    {
-        var validSounds = sounds.Where(s => !string.IsNullOrEmpty(s)).ToList();
-
-        if (validSounds.Count == 0)
-        {
-            Debug.LogError("No hay sonidos válidos para sortear.");
-            return null;
-        }
-
-        int index = Random.Range(0, validSounds.Count);
-        //Debug.Log($"[SHUFFLE] Elegido índice {index} de {validSounds.Count}");
-        return validSounds[index];
-    }
-
-    public void PlayAudioOnSource(string audioName, AudioSource Target)
-    {
-            //Debug.Log("Nombre del audio a ejecutar en sorce: " + audioName);
-            Target.clip = AudioManager.Instance.GetSoundClipFromID(audioName);
-            Target.PlayOneShot(Target.clip);
-    }
-
-    public ShuffleElement GetShuffleById(string id)
-    {
-        foreach (var shuffle in shufflesList)
-        {
-            if (shuffle.name.ToLower() == id.ToLower())
-            {
-                return shuffle;
-            }
-        }
-        Debug.LogError("NO SE ENCONTRÓ EL SHUFFLE BUSCADO. REVISE SI EL NOMBRE ES CORRECTO O SI EL SHUFFLE EN CUESTIÓN ESTÁ AGREGADO A LA LISTA DE SHUFFLES Y VUELVA A INTENTARLO.");
-        return null;
-    }
-
-    public void ChangePitchOnSorce(float pitch, AudioSource sorce)
-    {
-        sorce.pitch = pitch;
-    }
-
-    public float RandomPitch(float Min, float Max)
-    {
-        float result = Random.Range(Min, Max);
-        //Debug.Log(result);
-        return result;
-    }
-
-    public void ChangePitch(float pitch)
-    {
-        soundAudioSource.pitch = pitch;
-    }
-
-    public void SetNormalPitch()
-    {
-        soundAudioSource.pitch = normalPitch;
-    }
-
     
 }
 
