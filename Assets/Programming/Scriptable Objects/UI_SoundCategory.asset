@@ -12,4 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01286e7b11a789c4993159f6e81bb3b0, type: 3}
   m_Name: UI_SoundCategory
   m_EditorClassIdentifier: 
-  Sounds: []
+  Sounds:
+  - clip: {fileID: 8300000, guid: 93e7814aef76cab458945e76070bf50e, type: 3}
+    soundID: Switch1
+  - clip: {fileID: 8300000, guid: 1bff85fc8488ef943974793390db7836, type: 3}
+    soundID: Click1
+  - clip: {fileID: 8300000, guid: f5b1d98a57243da4c974093b39fe870b, type: 3}
+    soundID: Victory
+  - clip: {fileID: 8300000, guid: cfa56b10bbb0fb74a9e5a9511716fe30, type: 3}
+    soundID: Defeat

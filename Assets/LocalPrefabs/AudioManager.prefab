@@ -47,7 +47,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundAudioSource: {fileID: 8474995715680558598}
-  GameMusic: []
+  GameMusic:
+  - clip: {fileID: 8300000, guid: 72c78c92755041146bf757c81c2e644c, type: 3}
+    musicID: Gameplay
   musicAudioSource: {fileID: 8474995715790140118}
   SoundCategories:
   - {fileID: 11400000, guid: ce74cf2553c3bd34dbb23a53ff8dfee8, type: 2}

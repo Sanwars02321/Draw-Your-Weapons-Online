@@ -12,4 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01286e7b11a789c4993159f6e81bb3b0, type: 3}
   m_Name: Player_SoundCategory
   m_EditorClassIdentifier: 
-  Sounds: []
+  Sounds:
+  - clip: {fileID: 8300000, guid: 3378b585647e95d4ead28f86735338e7, type: 3}
+    soundID: Death
+  - clip: {fileID: 8300000, guid: f464100f0590cfb4d89377402fbba577, type: 3}
+    soundID: DrawPowerUp
+  - clip: {fileID: 8300000, guid: 43690a3cb473a78459a7a06cad098bc4, type: 3}
+    soundID: Shot
+  - clip: {fileID: 8300000, guid: f5b1d98a57243da4c974093b39fe870b, type: 3}
+    soundID: Victory
+  - clip: {fileID: 8300000, guid: 5b0d70ee99dd67146ad202f60e177ce0, type: 3}
+    soundID: Walk
