@@ -148,8 +148,9 @@ public class PlayerController : MonoBehaviourPun
                 currentWeapon.UpdateWeapon();
                 forwardAxis = actions.Gameplay.Move.ReadValue<float>();
                 rotationAxis = actions.Gameplay.Rotate.ReadValue<float>();
-                PauseGame();
+                
             }
+            PauseGame();
         }
     }
     private void FixedUpdate()
@@ -231,7 +232,14 @@ public class PlayerController : MonoBehaviourPun
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            LevelManager.Instance.PauseGame();
+            if ((LevelManager.Instance.IsPaused))
+            {
+                LevelManager.Instance.ResumeGame();
+            }
+            else
+            {
+                LevelManager.Instance.PauseGame();
+            }
         }
     }
     

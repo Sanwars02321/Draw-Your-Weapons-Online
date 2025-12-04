@@ -8,6 +8,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -537,12 +538,14 @@ public class LevelManager : AbstractSingleton<LevelManager>
     {
         PausePanel.SetActive(true);
         isPaused = true;
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
     public void ResumeGame()
     {
         PausePanel.SetActive(false);
         isPaused = false;
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
     
