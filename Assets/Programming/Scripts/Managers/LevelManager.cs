@@ -486,10 +486,12 @@ public class LevelManager : AbstractSingleton<LevelManager>
         if (localPlayer.photonView.ViewID == winnerViewID) //Compare winner ID with local player ID
         {
             localPlayer.playerStats.OnWin();
+            AudioManager.Instance.PlayLocalSoundClip("Victory");
             WinScreen.SetActive(true);
         }
         else
         {
+            AudioManager.Instance.PlayLocalSoundClip("Defeat");
             DefeatScreen.SetActive(true);
         }
             LootLockerManager.Instance.SendAllStats(localPlayer.playerStats);

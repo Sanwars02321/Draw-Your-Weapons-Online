@@ -35,7 +35,7 @@ public class AudioManager : MonoBehaviourPun
     public AudioSource MusicAudioSource => musicAudioSource;
 
 
-    void Awake()
+    void Awake()//NO ES UN SINGLETON XQ AL TENER PHOTON VIEW EL GO SE DESTRUYE, PONERLO EN CADA ESCENA
     {
         if (Instance != null && Instance != this)
         {
@@ -45,7 +45,6 @@ public class AudioManager : MonoBehaviourPun
         {
             Instance = this;
         }
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start()

@@ -188,6 +188,10 @@ public class PlayerController : MonoBehaviourPun
         isOnPowerUp = true;
         currentWeapon = pencilRef;
         StartCoroutine(RemoveEffectAfterTime(lifeSpan));
+        if (PhotonView.IsMine)
+        {
+            AudioManager.Instance.PlayLocalSoundClip("DrawPowerUp");
+        }
     }
 
 
@@ -198,6 +202,10 @@ public class PlayerController : MonoBehaviourPun
         isOnPowerUp = true;
         movementSpeed = speedBoostSpeed;
         removeEffectsRoutine = StartCoroutine(RemoveEffectAfterTime(lifeSpan));
+        if (PhotonView.IsMine)
+        {
+            AudioManager.Instance.PlayLocalSoundClip("SpeedPowerUp");
+        }
     }
 
     private IEnumerator RemoveEffectAfterTime(float time)

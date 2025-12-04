@@ -55,6 +55,8 @@ public class LifeController : MonoBehaviourPun
         // desactivar controles SOLO del que se murio localmente
         if (photonView.IsMine)
         {
+            //Sonido de muerte llamado solo por el que muere
+            AudioManager.Instance.PlayMultiplayerSoundClip("Death");
             playerController.enabled = false;
             LevelManager.Instance.PhotonView.RPC("RemovePlayer", RpcTarget.MasterClient, playerController.photonView.ViewID);
         }

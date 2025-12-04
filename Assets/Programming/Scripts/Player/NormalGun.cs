@@ -19,6 +19,7 @@ public class NormalGun : Weapon
             newBulletGO.GetComponent<Bullet>().SetOwner(photonView);
             newBulletGO.GetComponent<Bullet>().SetDirection(MyMath.RotationToDirection(transform.eulerAngles.z));
             CDTimer = Cooldown;
+            AudioManager.Instance.PlayMultiplayerSoundClip("Shot");
         }
     }
 }
