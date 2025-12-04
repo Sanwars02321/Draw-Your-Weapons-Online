@@ -22,11 +22,17 @@ public class ButtonManager : MonoBehaviour
     }
     public void ConnectToServer()
     {
-        PUNManager.Instance.ConnectToPUN();
-        animator.SetBool("IsLoading", true);
-        //animator.SetBool("Loaded", false);
-        animator.SetBool("LoadFail", false);
-
+        if (!PhotonNetwork.IsConnected)
+        {
+            PUNManager.Instance.ConnectToPUN();
+            animator.SetBool("IsLoading", true);
+            //animator.SetBool("Loaded", false);
+            animator.SetBool("LoadFail", false);
+        }
+        else
+        {
+            animator.SetBool("Loaded", true);
+        }
     }
 
     public void CreateRoom()
