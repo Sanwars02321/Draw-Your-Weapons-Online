@@ -5,6 +5,7 @@ using Photon.Pun;
 using TMPro;
 using Photon.Realtime;
 using System;
+using WebSocketSharp;
 
 public class PUNManager : MonoBehaviourPunCallbacks
 {
@@ -56,11 +57,11 @@ public class PUNManager : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        //if (RoomNameExists(roomName))
-        //{
-        //    SetWarning(WarningText, "La sala que intenta crear ya existe. Por favor, cambie el nombre ingresado y vuelva a intentarlo.");
-        //    return;
-        //}
+        if (string.IsNullOrEmpty(playerNameInputField.text))
+        {
+            SetWarning("El nombre de jugador no puede estar vacío.");
+            return;
+        }
 
         if (string.IsNullOrEmpty(roomName))
         {
@@ -91,12 +92,12 @@ public class PUNManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        //if (!RoomNameExists(roomName))
-        //{
-        //    SetWarning(WarningText, "La sala a la que intenta unirse no existe. Por favor, corrobore el nombre ingresado y vuelva a intentarlo.");
-        //    return;
-        //}
-        
+        if (string.IsNullOrEmpty(playerNameInputField.text))
+        {
+            SetWarning("El nombre de jugador no puede estar vacío.");
+            return;
+        }
+
         PhotonNetwork.JoinRoom(roomName);
     }
 
@@ -219,7 +220,7 @@ public class PUNManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void SetWarning( string message)
+    public void SetWarning(string message)
     {
         WarningText.gameObject.SetActive(true);
         WarningText.text = message;

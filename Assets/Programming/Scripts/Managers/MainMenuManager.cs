@@ -7,7 +7,8 @@ public class MainMenuManager : MonoBehaviour
 {
     [SerializeField] private TMP_InputField playerNameFieldRef;
     [SerializeField] private TMP_InputField roomNameFieldRef;
-    // Start is called before the first frame update
+    [SerializeField] private TextMeshProUGUI warningText;
+
     void Start()
     {
         SetReferences();
@@ -17,6 +18,7 @@ public class MainMenuManager : MonoBehaviour
     {
         PUNManager.Instance.playerNameInputField = playerNameFieldRef;
         PUNManager.Instance.roomNameInputField = roomNameFieldRef;
+        PUNManager.Instance.WarningText = warningText;
     }
 
 }
